@@ -34,7 +34,10 @@ public final class AppStore {
             if (!s.has("prePrayer")) s.put("prePrayer", true);
             if (!s.has("volume")) s.put("volume", 55);
             if (!s.has("sound")) s.put("sound", "rain");
-            if (!s.has("theme")) s.put("theme", "dark");
+            if (!s.has("theme")) s.put("theme", "light");
+            if (!s.has("autoImmersive")) s.put("autoImmersive", true);
+            if (!s.has("haptics")) s.put("haptics", true);
+            if (!s.has("lightEffects")) s.put("lightEffects", false);
             if (!s.has("task")) s.put("task", "");
             if (!s.has("offsets")) s.put("offsets", new JSONArray("[0,0,0,0,0]"));
             if (!s.has("fajrAngle")) s.put("fajrAngle", 18);
@@ -113,6 +116,7 @@ public final class AppStore {
             saveTimer(c,t);
             Alarms.cancelTimer(c);
             Alarms.timerFinished(c,t.phase.equals("focus"));
+            Haptics.pulse(c,false);
             if (settings(c).optBoolean("stopSoundWithTimer",true)) SoundService.stop(c);
             return true;
         }
@@ -166,7 +170,7 @@ public final class AppStore {
         synchronized (LOCK) {
             JSONObject s=settings(c);
             java.util.Iterator<String> keys=changes.keys();
-            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task ";
+            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects ";
             while(keys.hasNext()) { String k=keys.next(); if (allowed.contains(" "+k+" ")) s.put(k,changes.get(k)); }
             if(s.optBoolean("configured")) {
                 double lat=s.optDouble("latitude"),lon=s.optDouble("longitude");

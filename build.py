@@ -31,9 +31,9 @@ with zipfile.ZipFile(BUILD/'base.apk') as base, zipfile.ZipFile(BUILD/'unsigned.
         z.writestr(entry.filename,base.read(entry),compress_type=entry.compress_type)
     for file in (BUILD/'dex').glob('*.dex'):z.write(file,file.name,compress_type=zipfile.ZIP_DEFLATED)
 run(sdk_tool('zipalign'),'-f','4',BUILD/'unsigned.apk',BUILD/'aligned.apk')
-key=ROOT.parent/'signing/sakin-local.p12';key.parent.mkdir(exist_ok=True)
+key=ROOT.parent/'signing/sakin-local.p12'
 if not key.exists():
-    run(java_tool('keytool'),'-genkeypair','-keystore',key,'-storetype','PKCS12','-storepass','android','-keypass','android','-alias','sakin','-keyalg','RSA','-keysize','2048','-validity','10000','-dname','CN=Sakin Personal App, O=Personal, C=PS')
+    raise FileNotFoundError('The original signing key is required for updates. Restore '+str(key)+'; a replacement key will not be generated.')
 args.out=args.out.resolve();args.out.parent.mkdir(parents=True,exist_ok=True)
 run(java_tool('java'),'-jar',BT/'lib/apksigner.jar','sign','--ks',key,'--ks-key-alias','sakin','--ks-pass','pass:android','--v4-signing-enabled','false','--out',args.out,BUILD/'aligned.apk')
 run(java_tool('java'),'-jar',BT/'lib/apksigner.jar','verify','--verbose',args.out)

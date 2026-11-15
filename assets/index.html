@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0d1715">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#FAF7F2">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>سَكَن • رفيق الدراسة</title>
+  <link rel="preload" href="fonts/ReadexPro.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
   <symbol id="expand" viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5"/></symbol>
   <symbol id="play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
   <symbol id="pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
-  <symbol id="reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+  <symbol id="icon-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
   <symbol id="rain" viewBox="0 0 24 24"><path d="M6 14a4 4 0 0 1-1-8 6 6 0 0 1 11-1 4.5 4.5 0 0 1 2 9M7 17l-1 3m6-3-1 3m6-3-1 3"/></symbol>
   <symbol id="waves" viewBox="0 0 24 24"><path d="M2 6q3-4 6 0t6 0 6 0M2 12q3-4 6 0t6 0 6 0M2 18q3-4 6 0t6 0 6 0"/></symbol>
   <symbol id="water" viewBox="0 0 24 24"><path d="M12 3c-3 5-7 8-7 12a7 7 0 0 0 14 0c0-4-4-7-7-12ZM8 15q0 3 3 3"/></symbol>
@@ -24,71 +25,48 @@
   <symbol id="moon" viewBox="0 0 24 24"><path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11Z"/></symbol>
   <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
   <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-  <symbol id="volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Zm12 0q3 3 0 6m3-9q6 6 0 12"/></symbol>
+  <symbol id="icon-volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Zm12 0q3 3 0 6m3-9q6 6 0 12"/></symbol>
   <symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 6-7 11-7 11S5 16 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
-</defs></svg>
+<symbol id="chevron" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol><symbol id="book" viewBox="0 0 24 24"><path d="M3 5q5-2 9 2 4-4 9-2v14q-5-2-9 2-4-4-9-2ZM12 7v14"/></symbol><symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h7m6 0h3M4 17h3m6 0h7"/><circle cx="14" cy="7" r="3"/><circle cx="10" cy="17" r="3"/></symbol></defs></svg>
+<div class="room" aria-hidden="true"><div class="window-halo"></div><div class="room-window"><span></span><span></span><span></span><span></span></div><div class="room-sill"></div><div class="leaf-shadow leaf-a"></div><div class="leaf-shadow leaf-b"></div></div>
 <div class="app">
   <header class="topbar">
-    <div class="brand"><svg class="brand-mark"><use href="#leaf"/></svg><span>سَكَن</span><span class="brand-sub">رفيق الدراسة</span></div>
-    <div class="header-actions">
-      <button id="miniSound" class="icon-btn far-only" aria-label="تشغيل أو إيقاف صوت الدراسة"><svg><use href="#volume"/></svg></button>
-      <button id="displayMode" class="icon-btn" aria-label="وضع العرض من بعيد" aria-pressed="false"><svg><use href="#expand"/></svg></button>
-      <button id="openSettings" class="icon-btn" aria-label="الإعدادات"><svg><use href="#settings"/></svg></button>
-    </div>
+    <div class="brand"><svg class="brand-mark"><use href="#leaf"/></svg><div><span class="brand-name">سَكَن</span><span class="brand-sub">مساحة صغيرة، وتركيز أعمق</span></div></div>
+    <div class="clock-area" aria-label="الوقت الآن"><div class="clock-line"><time id="clock" class="digits" dir="ltr">--:--</time><span id="ampm"></span></div><div id="date"></div><span id="clockZone" class="sr-only"></span></div>
+    <div class="header-actions"><button id="displayMode" class="icon-btn" aria-label="ملء الشاشة" aria-pressed="false"><svg><use href="#expand"/></svg></button><button id="openSettings" class="icon-btn" aria-label="الإعدادات"><svg><use href="#settings"/></svg></button></div>
   </header>
-  <section class="clock-area" aria-label="الوقت الآن">
-    <div class="clock-label"><span class="live-dot"></span><span>الوقت الآن</span><span id="clockZone"></span></div>
-    <div class="clock-line"><time id="clock" class="clock digits" dir="ltr">--:--</time><span id="ampm" class="muted"></span></div>
-    <div id="date" class="muted small"></div>
-  </section>
-  <main class="workspace">
-    <section class="timer-card" aria-label="مؤقّت الدراسة">
-      <div class="section-row"><span id="phaseLabel" class="eyebrow">وقت التركيز</span><span id="roundLabel" class="muted small">جلسة جديدة</span></div>
-      <label class="task-row"><span class="sr-only">المادة أو هدف الجلسة</span><input id="task" maxlength="120" placeholder="شو بدك تدرس اليوم؟" autocomplete="off"></label>
-      <div class="timer-wrap"><div id="timer" class="timer digits" dir="ltr" role="timer" aria-label="الوقت المتبقي">25:00</div><div id="timerHint" class="muted small">خطوة صغيرة، وتركيز أعمق</div></div>
-      <div id="progress" class="progress" role="progressbar" aria-label="تقدّم الجلسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill"></div></div>
-      <div class="timer-actions">
-        <button id="start" class="primary"><svg><use id="startIcon" href="#play"/></svg><span id="startLabel">ابدأ التركيز</span></button>
-        <button id="reset" class="secondary square" aria-label="إعادة ضبط المؤقّت"><svg><use href="#reset"/></svg></button>
-        <button id="nextPhase" class="secondary">للراحة</button>
-      </div>
-      <div class="presets" role="group" aria-label="أنماط الدراسة والراحة">
-        <button data-focus="25" data-rest="5" aria-pressed="true"><span dir="ltr">25 / 5</span></button>
-        <button data-focus="50" data-rest="10" aria-pressed="false"><span dir="ltr">50 / 10</span></button>
-        <button data-focus="20" data-rest="15" aria-pressed="false"><span dir="ltr">20 / 15</span></button>
-        <button id="customTimer">مخصّص</button>
-      </div>
-      <p id="presetHint" class="muted tiny preset-hint">دقائق دراسة / دقائق راحة</p>
-      <p id="timerMessage" class="session-message" hidden aria-live="polite"></p>
-    </section>
-    <section class="prayer-card" aria-label="الصلاة القادمة">
-      <div id="prayerEmpty" class="prayer-empty"><svg class="prayer-symbol"><use href="#sun"/></svg><div class="eyebrow">دراستك بين صلاتين</div><p>اضبط مدينتك لنحسب الصلاة الجاية</p><button id="setupLocation" class="gold-btn"><svg><use href="#pin"/></svg>اختَر مدينتك</button></div>
-      <div id="prayerContent" hidden>
-        <div class="section-row"><span class="eyebrow">الصلاة الجاية</span><button id="cityButton" class="text-btn small"><span id="cityLabel"></span><svg><use href="#pin"/></svg></button></div>
-        <div class="prayer-heading"><div><h1 id="prayerName">الظهر</h1><div class="muted small">الأذان <time id="prayerAt" dir="auto">--:--</time><span id="tomorrow"></span></div></div><svg class="prayer-symbol"><use id="prayerIcon" href="#sun"/></svg></div>
-        <div class="countdown-label">باقي للأذان</div>
-        <div id="prayerCountdown" class="prayer-countdown digits" dir="ltr">--:--:--</div>
-        <div class="prayer-footer"><button id="fitPrayer" class="gold-btn small">جلسة قبل الصلاة</button><button id="openPrayers" class="text-btn small">مواقيت اليوم</button></div>
-      </div>
-      <p id="prayerError" class="error small" hidden></p>
-    </section>
-  </main>
-  <section class="audio-section" aria-label="أجواء الدراسة">
-    <div class="section-row"><div><span class="eyebrow">أجواء الدراسة</span><span id="soundStatus" class="muted small"> • بدون إنترنت</span></div><button id="soundToggle" class="sound-toggle" aria-pressed="false"><svg><use id="soundIcon" href="#play"/></svg><span id="soundToggleLabel">تشغيل</span></button></div>
-    <div class="sound-choices" role="group" aria-label="اختر صوتًا">
-      <button data-sound="rain" aria-pressed="true"><svg><use href="#rain"/></svg><span>مطر</span></button>
-      <button data-sound="ocean" aria-pressed="false"><svg><use href="#waves"/></svg><span>بحر</span></button>
-      <button data-sound="stream" aria-pressed="false"><svg><use href="#water"/></svg><span>مياه</span></button>
-      <button data-sound="brown" aria-pressed="false"><svg><use href="#noise"/></svg><span>ضجيج بني</span></button>
+
+  <section class="prayer-strip" aria-label="الصلاة القادمة">
+    <div id="prayerEmpty"><button id="setupLocation" class="empty-prayer"><svg><use href="#sun"/></svg><span><strong>دراستك بين صلاتين</strong><small>اختَر مدينتك لنحسب الصلاة الجاية</small></span><svg class="chevron"><use href="#chevron"/></svg></button></div>
+    <div id="prayerContent" hidden>
+      <button id="openPrayers" class="prayer-pill" aria-label="الصلاة القادمة ومواقيت اليوم"><span class="prayer-icon"><svg><use id="prayerIcon" href="#sun"/></svg></span><span class="prayer-title"><span class="prayer-eyebrow">الصلاة الجاية</span><strong id="prayerName">—</strong><small><time id="prayerAt">--:--</time><span id="tomorrow"></span></small></span><span class="prayer-remaining"><small>باقي للأذان</small><span id="prayerCountdown" class="digits" dir="ltr">--:--:--</span></span></button>
+      <button id="cityButton" class="city-pill" aria-label="ضبط المدينة"><svg><use href="#pin"/></svg><span id="cityLabel"></span><svg class="chevron"><use href="#chevron"/></svg></button>
     </div>
-    <label class="volume-row"><svg aria-hidden="true"><use href="#volume"/></svg><span class="sr-only">مستوى صوت الأجواء</span><input id="volume" type="range" min="0" max="100" value="55"><output id="volumeValue">55%</output></label>
+    <p id="prayerError" class="error small" hidden></p>
   </section>
-  <footer class="bottom-meta"><span><span class="live-dot"></span>تركيزك اليوم <b id="todayStudy">٠ دقيقة</b></span><span id="todayRounds">٠ جلسات</span></footer>
-  <button id="permissionsHint" class="permission-hint" hidden>للتنبيه والشاشة مسكّرة، فعّل أذونات التنبيهات والتوقيت</button>
+
+  <main class="desk" aria-label="مؤقّت الدراسة">
+    <div class="desk-top"><button id="openTask" class="task-preview" aria-label="تحديد هدف الجلسة"><svg><use href="#book"/></svg><span id="taskPreview">شو هدف جلستك؟</span></button><span id="roundLabel" class="round-label">جلسة جديدة</span></div>
+    <div class="timer-stage" id="timerStage">
+      <div class="timer-orbit" id="timerOrbit">
+        <svg class="timer-ring" viewBox="0 0 240 240" role="img" aria-label="تقدّم الجلسة"><circle class="ring-track" cx="120" cy="120" r="109"/><circle id="progressArc" class="ring-progress" cx="120" cy="120" r="109" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+        <div class="timer-center"><span class="orbit-leaf" aria-hidden="true"><svg><use href="#leaf"/></svg></span><span id="phaseLabel" class="phase-label">وقت التركيز</span><div id="timer" class="timer digits" dir="ltr" role="timer" aria-label="الوقت المتبقي"><span>2</span><span>5</span><span class="colon">:</span><span>0</span><span>0</span></div><p id="timerHint">خطوة صغيرة، وتركيز أعمق</p><span id="sessionDuration" class="duration-caption">٢٥ دقيقة إلك</span></div>
+      </div>
+      <div id="progress" class="sr-only" role="progressbar" aria-label="تقدّم الجلسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      <p id="timerMessage" class="session-message" hidden aria-live="polite"></p>
+    </div>
+    <div class="timer-actions quiet-controls"><button id="start" class="primary"><svg><use id="startIcon" href="#play"/></svg><span id="startLabel">ابدأ التركيز</span></button><button id="reset" class="secondary square" aria-label="إعادة ضبط المؤقّت"><svg><use href="#icon-reset"/></svg></button><button id="nextPhase" class="secondary">للراحة</button></div>
+    <div class="preset-area quiet-controls"><div class="presets" role="group" aria-label="دقائق الدراسة والراحة"><button data-focus="25" data-rest="5" aria-pressed="true"><span dir="ltr">25 / 5</span></button><button data-focus="50" data-rest="10" aria-pressed="false"><span dir="ltr">50 / 10</span></button><button data-focus="20" data-rest="15" aria-pressed="false"><span dir="ltr">20 / 15</span></button><button id="customTimer" aria-pressed="false"><svg><use href="#sliders"/></svg><span id="customTimerLabel">مخصّص</span></button></div><p id="presetHint" class="sr-only">دقائق دراسة / دقائق راحة</p></div>
+  </main>
+
+  <footer class="utility-bar quiet-controls"><div class="sound-pill"><button id="openAudio" class="sound-picker" aria-label="اختيار صوت الدراسة"><svg id="currentSoundIcon"><use id="currentSoundUse" href="#rain"/></svg><span id="currentSoundLabel">مطر هادئ</span><svg class="chevron"><use href="#chevron"/></svg></button><button id="soundToggle" class="sound-play" aria-label="تشغيل الصوت" aria-pressed="false"><svg><use id="soundIcon" href="#play"/></svg><span id="soundToggleLabel" class="sr-only">تشغيل</span></button></div><button id="fitPrayer" class="fit-prayer">جلسة قبل الصلاة</button></footer>
+  <button id="permissionsHint" class="sr-only" hidden>ضبط أذونات التنبيهات والتوقيت</button>
 </div>
 
+<dialog id="audioDialog" class="sheet small-sheet" aria-labelledby="audioTitle"><div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><div><span class="sheet-kicker">على ذوقك</span><h2 id="audioTitle">صوت يرافقك</h2></div><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div><p id="soundStatus" class="muted small">الأصوات محفوظة على جوالك</p><div class="sound-choices" role="group" aria-label="اختر صوتًا"><button data-sound="rain" aria-pressed="true"><svg><use href="#rain"/></svg><span>مطر</span></button><button data-sound="ocean" aria-pressed="false"><svg><use href="#waves"/></svg><span>بحر</span></button><button data-sound="stream" aria-pressed="false"><svg><use href="#water"/></svg><span>مياه</span></button><button data-sound="brown" aria-pressed="false"><svg><use href="#noise"/></svg><span>ضجيج بني</span></button></div><label class="volume-row"><svg aria-hidden="true"><use href="#icon-volume"/></svg><span class="sr-only">مستوى صوت الأجواء</span><input id="volume" type="range" min="0" max="100" value="55"><output id="volumeValue">55%</output></label><button id="miniSound" class="primary full" aria-pressed="false"><svg><use id="miniSoundIcon" href="#play"/></svg><span id="miniSoundLabel">تشغيل الصوت</span></button></dialog>
+<dialog id="taskDialog" class="sheet small-sheet" aria-labelledby="taskTitle"><div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><div><span class="sheet-kicker">شغلة وحدة هلّق</span><h2 id="taskTitle">شو بدك تدرس؟</h2></div><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div><label class="form-label">هدف الجلسة<input id="task" maxlength="120" placeholder="مثلاً: أراجع فصل الشبكات" autocomplete="off"></label><button id="saveTask" class="primary full">هيّا نبدأ</button><div class="study-stats"><span>تركيزك اليوم <strong id="todayStudy">٠ دقيقة</strong></span><span id="todayRounds">٠ جلسات مكتملة</span></div></dialog>
 <dialog id="customDialog" class="sheet small-sheet" aria-labelledby="customTitle">
-  <div class="sheet-header"><h2 id="customTitle">على إيقاعك</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
+  <div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><h2 id="customTitle">على إيقاعك</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
   <p class="muted">اختَر مدة تناسب دراستك وراحتك.</p>
   <form id="customForm">
     <div class="field-pair"><label>دراسة بالدقائق<input id="focusMinutes" type="number" min="1" max="240" value="25" required inputmode="numeric"></label><label>راحة بالدقائق<input id="breakMinutes" type="number" min="1" max="120" value="5" required inputmode="numeric"></label></div>
@@ -97,14 +75,14 @@
 </dialog>
 
 <dialog id="prayersDialog" class="sheet small-sheet" aria-labelledby="prayersTitle">
-  <div class="sheet-header"><h2 id="prayersTitle">مواقيت اليوم</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
+  <div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><h2 id="prayersTitle">مواقيت اليوم</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
   <p id="prayerDateLabel" class="muted small"></p>
   <div id="prayerRows" class="prayer-rows"></div>
   <p class="muted tiny">المواقيت محسوبة حسب موقعك والطريقة اللي اخترتها. قارنها بتقويم مسجدك أول مرة.</p>
 </dialog>
 
 <dialog id="settingsDialog" class="sheet" aria-labelledby="settingsTitle">
-  <div class="sheet-header"><h2 id="settingsTitle">خلّي سَكَن على ذوقك</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
+  <div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><h2 id="settingsTitle">على راحتك</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
   <section class="settings-group">
     <h3>الموقع ومواقيت الصلاة</h3>
     <label>المدينة<select id="citySelect"><option value="">اختَر مدينتك</option></select></label>
@@ -130,9 +108,9 @@
   </section>
   <section class="settings-group">
     <h3>الشاشة والصوت</h3>
-    <label class="toggle-row"><span>خلّي الشاشة مضوّية أثناء فتح التطبيق</span><input id="keepScreen" type="checkbox" role="switch"></label>
-    <label class="toggle-row"><span>أوقف الصوت مع نهاية أو إيقاف الجلسة</span><input id="stopSoundWithTimer" type="checkbox" role="switch"></label>
-    <label>المظهر<select id="theme"><option value="dark">ليلي هادئ</option><option value="light">نهاري</option></select></label>
+    <label class="toggle-row"><span>خلّي الشاشة صاحية أثناء الجلسة</span><input id="keepScreen" type="checkbox" role="switch"></label>
+    <label class="toggle-row"><span>وضع الدراسة الأفقي تلقائيًا</span><input id="autoImmersive" type="checkbox" role="switch"></label><label class="toggle-row"><span>لمسة اهتزاز عند البدء والانتهاء</span><input id="haptics" type="checkbox" role="switch"></label><label class="toggle-row"><span>حركة أخف</span><input id="lightEffects" type="checkbox" role="switch"></label><label class="toggle-row"><span>أوقف الصوت مع نهاية أو إيقاف الجلسة</span><input id="stopSoundWithTimer" type="checkbox" role="switch"></label>
+    <label>المظهر<select id="theme"><option value="light">فاتح ودافئ</option><option value="dark">داكن ناعم</option></select></label>
   </section>
   <section class="settings-group">
     <h3>التنبيه والشاشة مسكّرة</h3>
@@ -140,15 +118,109 @@
     <button id="allowExact" class="permission-row"><span>التوقيت الدقيق</span><span id="exactStatus"></span></button>
     <p class="muted tiny">اضغط كل إذن لتفعيله. بدون التوقيت الدقيق ممكن يتأخر التنبيه بالخلفية. بعض الجوالات تحتاج السماح للتطبيق بالعمل بالخلفية من إعدادات البطارية.</p>
   </section>
-  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٠ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. الأصوات مولّدة ومحفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
+  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.١ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. الأصوات مولّدة ومحفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
 Copyright (c) 2016 Batoul Apps
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre></details></div>
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre></details><details><summary>خط Readex Pro — الترخيص</summary><pre>Copyright 2018 The Readex Pro Project Authors (https://github.com/ThomasJockin/readexpro), with Reserved Font Name “RevReading Lexend”.
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+https://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+&quot;Font Software&quot; refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+&quot;Reserved Font Name&quot; refers to any names specified as such after the
+copyright statement(s).
+
+&quot;Original Version&quot; refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+&quot;Modified Version&quot; refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+&quot;Author&quot; refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION &amp; CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+</pre></details></div>
 </dialog>
+
 <div id="toast" class="toast" role="status" hidden></div>
 <script src="app.js"></script>
 </body>

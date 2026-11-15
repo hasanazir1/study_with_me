@@ -1,14 +1,16 @@
 """Build the offline APK using official SDK tools; no Gradle or network is needed."""
 from pathlib import Path
 import argparse, os, shutil, subprocess, zipfile
+from tools.java_env import find_jdk_home
 
 ROOT=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser()
-parser.add_argument('--sdk',type=Path,default=Path(os.environ.get('ANDROID_SDK_ROOT',str(ROOT.parent/'android-sdk'))))
-parser.add_argument('--java',type=Path,default=Path(os.environ.get('JAVA_HOME',r'C:\Program Files\Java\jdk-20')))
+parser.add_argument('--sdk',type=Path,default=Path(os.environ.get('ANDROID_SDK_ROOT',os.environ.get('ANDROID_HOME',str(ROOT.parent/'android-sdk')))))
+parser.add_argument('--java',type=Path)
 parser.add_argument('--out',type=Path,default=ROOT/'build/sakin-study.apk')
+parser.add_argument('--keystore',type=Path,default=Path(os.environ.get('SAKIN_KEYSTORE',str(ROOT.parent/'signing/sakin-local.p12'))))
 args=parser.parse_args()
-SDK=args.sdk.resolve();JAVA=args.java/'bin';BT=SDK/'build-tools/35.0.0';PLATFORM=SDK/'platforms/android-35/android.jar'
+SDK=args.sdk.resolve();JAVA=find_jdk_home(args.java)/'bin';BT=SDK/'build-tools/35.0.0';PLATFORM=SDK/'platforms/android-35/android.jar'
 BUILD=ROOT/'build';BUILD.mkdir(exist_ok=True)
 for directory in ['generated','classes','dex','tests']:(BUILD/directory).mkdir(exist_ok=True)
 def run(*cmd):
@@ -31,7 +33,7 @@ with zipfile.ZipFile(BUILD/'base.apk') as base, zipfile.ZipFile(BUILD/'unsigned.
         z.writestr(entry.filename,base.read(entry),compress_type=entry.compress_type)
     for file in (BUILD/'dex').glob('*.dex'):z.write(file,file.name,compress_type=zipfile.ZIP_DEFLATED)
 run(sdk_tool('zipalign'),'-f','4',BUILD/'unsigned.apk',BUILD/'aligned.apk')
-key=ROOT.parent/'signing/sakin-local.p12'
+key=args.keystore.resolve()
 if not key.exists():
     raise FileNotFoundError('The original signing key is required for updates. Restore '+str(key)+'; a replacement key will not be generated.')
 args.out=args.out.resolve();args.out.parent.mkdir(parents=True,exist_ok=True)

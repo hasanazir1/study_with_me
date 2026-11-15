@@ -1,54 +1,86 @@
-# Sakin Study / سَكَن
+# سَكَن · Sakin
 
-A personal, offline Android study companion with Arabic RTL UI, a persistent monotonic focus timer, configurable breaks, local prayer calculations, next-prayer countdown, prayer tracking, ambient audio, and a landscape distance-display mode.
+غرفة دراسة صغيرة على أندرويد: مؤقّت تركيز، الصلاة الجاية مع عدّ تنازلي، وأصوات هادئة — بدون حساب أو إنترنت.
 
-## Phase one — Android 1.1.0 / versionCode 2
+**Native Android APK · Java + local WebView · Arabic RTL · Offline**
 
-This is a plain Java Activity + WebView project, not Capacitor or Cordova. The redesign uses bundled Readex Pro, a light cream default with a soft blue-green dark theme, a circular timer, fixed-height single-screen layouts, bottom sheets, and idle-fading controls. `NativePresentation` owns immersive system bars, Activity sensor-landscape orientation during sessions, cutout/keyboard insets, and session-only `FLAG_KEEP_SCREEN_ON`. Back exits immersive mode before leaving the Activity. Native `Haptics` is optional. There are no web fullscreen/orientation calls, PWA files, web hosting requirements, or runtime internet access.
+[تحميل التطبيق من الإصدارات](https://github.com/hasanazir1/study_with_me/releases/latest) · [التقدّم الحالي](docs/PROGRESS.md) · [الخطة](docs/ROADMAP.md) · [تعليمات التطوير](docs/DEVELOPMENT.md)
 
-The upgrade retains the package and original signing certificate. It preserves functional preferences and timer data; a one-time migration switches the appearance to light for the requested redesign. Existing ambient audio remains on the original native MediaPlayer foreground service; audio quality, layers and Media3 integration are deferred to phase two. Animated scenes, character states, and new prayer behavior remain later phases.
+![سَكَن — معاينة واجهة المرحلة الأولى](docs/phase1-landscape.jpg)
 
-## Build
+*معاينة لنفس ملفات الواجهة، بمواقيت توضيحية. ليست صورة من جهاز أندرويد فعلي.*
 
-Requires JDK 17+ and official Android SDK Platform 35 / Build Tools 35.0.0. The only runtime library is `com.batoulapps.adhan:adhan:1.2.1`, included under its MIT license. No Gradle or runtime internet permission is needed.
+## وين وصلنا؟
 
-```powershell
-python build.py --sdk C:\path\to\android-sdk --java C:\path\to\jdk --out C:\path\to\sakin-study.apk
+أحدث مرحلة للتطبيق **1.1.0 / versionCode 2**: تصميم فاتح ودافئ، مظهر داكن ناعم، خط عربي محلي، حلقة للمؤقت، وشاشة واحدة مع تفاصيل في sheets. العرض الغامر والاتجاه وإبقاء الشاشة صاحية والاهتزاز موصولون بأندرويد الأصلي.
+
+**المرحلة الأولى مسلّمة، وبانتظار ملاحظات تجربة الجوال. المرحلة الثانية للصوت لم تبدأ.**
+
+الريبو يحفظ نسختين سابقتين كنقطتي بداية، ثم تجهيزات Git والتوثيق والفحوص. التاريخ الأولي مستورد من نسخ محفوظة؛ ليس سجلًا لكل تعديل قديم على حدة. من الآن نسجّل التعديلات بcommits صغيرة وواضحة.
+
+## ماذا يعمل الآن؟
+
+- مؤقّت دراسة واستراحة: 25/5، 50/10، 20/15 أو مدد مخصّصة، مع إيقاف واستكمال وإعادة ضبط.
+- الصلاة القادمة وموعدها والمتبقي، اختيار المدينة، طريقة الحساب والمذهب، وتعديل الدقائق.
+- مواقيت اليوم وعلامة «صليت»، وزر «جلسة قبل الصلاة».
+- أربعة أصوات محفوظة داخل التطبيق، وتشغيل أصلي بالخلفية مع MediaSession.
+- إعدادات محلية، هدف للجلسة وسجل تركيز يومي، وحركات أخف وخيارات اهتزاز.
+
+المؤقّت وحساب الصلاة لهما اختبارات، وتم بناء APK وفحص توقيعه. **التثبيت والتدوير والنوتش والاهتزاز والصوت بالخلفية لم تُختبر بعد على جهاز فعلي أو محاكي**؛ التفاصيل في [سجل التقدم](docs/PROGRESS.md) و[قائمة تجربة أندرويد](docs/ANDROID_TEST_CHECKLIST_AR.md).
+
+## ابدأ بالكود
+
+```text
+git clone https://github.com/hasanazir1/study_with_me.git
+cd study_with_me
 ```
 
-`JAVA_HOME` and `ANDROID_SDK_ROOT` are accepted. The script requires the original personal signing key in the parent folder's `signing/sakin-local.p12` and stops if it is missing. It does not create replacement keys. Preserve that key for future updates. The distributed source archive excludes private signing keys, generated build files, and tool caches.
+هذا مشروع **Java Activity + WebView عادي**، وليس Capacitor أو Cordova أو تطبيق ويب مستضاف. لا يوجد PWA أو service worker. كل الخطوط والأصوات وحساب الصلاة محلي داخل APK، ولا توجد صلاحية إنترنت.
 
-Audio is original procedural PCM, generated with NumPy using `tools/generate_audio.py`. The four ready-to-use audio loops are already included. To regenerate:
-
-```powershell
-python tools/generate_audio.py
+```text
+AndroidManifest.xml       الحزمة وإصدار أندرويد والصلاحيات
+src/com/sakin/study/      المؤقّت والصلاة والخدمات والجسر الأصلي
+assets/                  الواجهة العربية والخط والأصوات
+res/                     هوية التطبيق وموارد أندرويد
+libs/                    مكتبة الصلاة المرخّصة
+tests/                   اختبارات المؤقّت والصلاة والواجهة
+tools/                   توليد الأصوات الحالية
+docs/                    التقدم والخطة والتطوير والبنية
+build.py                 بناء APK بأدوات Android SDK مباشرة
+AGENTS.md                تعليمات أي شخص أو AI يكمل المشروع
 ```
 
-## Tests
+## الاختبارات
 
-```powershell
+تحتاج Python 3.10+ وJDK 17+، وNode.js لفحص JavaScript. لا تحتاج مفتاح التوقيع أو Android SDK لتشغيل هذه الفحوص:
+
+```text
 python tests/run_tests.py
 python tests/check_ui.py
 node --check assets/app.js
 ```
 
-The test runner currently targets Windows; adjust the Java executable suffix for another platform. It checks timer pause/resume, late and duplicate completion, break durations, shortened sessions, reboot recovery, prayer ordering, next-day rollover, location calendar dates, per-prayer offsets, Asr rules, and summer calculations. It also generates an optional UTF-8 browser-preview fixture.
+تعمل الفحوص تلقائيًا عبر [GitHub Actions](https://github.com/hasanazir1/study_with_me/actions) عند الدفع إلى `main` أو فتح pull request. لا تحمل هذه الفحوص مفتاح توقيع ولا تنشر APK تلقائيًا.
 
-The APK was checked with `apksigner verify` and `zipalign -c`. The HTML/CSS/JS interface was exercised through a browser harness using the same app assets; that harness is **not** packaged into the APK. Native installation, media playback, Android permission flows, background alarms, and GPS were not run on a physical device or emulator.
+## بناء APK
 
-Phase-one responsive checks covered actual CSS viewports 320×568, 396×806, 784×388 and 1151×791, with no main-screen scrolling or clipped controls. The fixture preview cannot verify Android orientation, system bars, notches, haptics or background media; use the Android checklist supplied with the APK for those checks.
+يلزم JDK 17+ وAndroid SDK Platform 35 وBuild Tools 35.0.0، مع **مفتاح التوقيع الأصلي** للإصدارات الرسمية:
 
-## Behavior
+```text
+python build.py --sdk /path/to/android-sdk --java /path/to/jdk --keystore /private/path/to/sakin-local.p12 --out build/sakin-study.apk
+```
 
-- Requires Android 8.0+ with an updated Android System WebView.
-- Timer uses `SystemClock.elapsedRealtime` and `ELAPSED_REALTIME_WAKEUP` alarms, so changing the wall clock does not change the countdown.
-- Completion and state changes are serialized behind one lock; late alarm delivery credits at most the active study duration.
-- A completed interval waits for a user action before starting the next phase.
-- An Android media-playback foreground service handles bundled ambient loops and audio focus; timer alarms do not use a persistent service.
-- Exact alarms and notifications are optional, requested only through explicit settings actions. Without exact-alarm access, alarms use the approximate idle-aware fallback and may be delayed in the background.
-- Prayer times are computed on-device with the user-selected method, coordinates, timezone, Asr rule, and offsets. They must be compared with the local timetable. Umm al-Qura's fixed Isha interval needs a manual Ramadan adjustment where applicable.
-- Prayer alerts use a system notification tone, not a full Adhan recording.
-- The native WebView serves only packaged assets from a private intercepted HTTPS host, blocks other navigation, disables file/content access, and exposes a limited local bridge. There is no `INTERNET` permission, analytics, account, or backup service.
-- Data is stored locally, Android backup is disabled, and uninstalling clears it.
+يمكن استخدام `JAVA_HOME` و`ANDROID_SDK_ROOT`/`ANDROID_HOME` و`SAKIN_KEYSTORE` بدل المسارات. البناء مباشر عبر AAPT2 وjavac وD8 وzipalign وapksigner؛ لا يوجد إعداد Gradle حاليًا. [خطوات البناء وGit كاملة](docs/DEVELOPMENT.md).
 
-See `ADHAN-LICENSE.txt` for the third-party license. Official references: [Adhan Java](https://github.com/batoulapps/adhan-kotlin/tree/java), [Android exact alarms](https://developer.android.com/about/versions/14/changes/schedule-exact-alarms), [foreground service types](https://developer.android.com/develop/background-work/services/fgs/service-types).
+الحزمة الرسمية `com.sakin.study`. **مفتاح التوقيع يبقى خارج Git**؛ البناء يتوقف عند غيابه ولا ينشئ بديلًا قد يمنع تحديث التطبيق. يمكن لأصحابك أو AI قراءة المشروع وتعديله وتشغيل اختباراته دون هذا المفتاح. ملفات APK الجاهزة موجودة في Releases.
+
+## المشاركة والمتابعة
+
+اقرأ [AGENTS.md](AGENTS.md) ثم [PROGRESS](docs/PROGRESS.md) و[ROADMAP](docs/ROADMAP.md). للتعديلات الجديدة نستعمل فرعًا واضحًا، وفحوصًا مناسبة، وcommit يصف النتيجة، ثم نحدّث سجل التقدم ونحفظه على GitHub. نتوقف بعد كل مرحلة للملاحظات.
+
+- [CHANGELOG](CHANGELOG.md): ماذا تغيّر في كل نسخة؟
+- [ARCHITECTURE](docs/ARCHITECTURE.md): كيف تتصل الواجهة بأندرويد؟
+- [CONTRIBUTING](CONTRIBUTING.md): كيف تساهم؟
+- [THIRD_PARTY](docs/THIRD_PARTY.md): المكتبات والخطوط والتراخيص الموجودة.
+
+ترخيص عام للكود الأصلي لم يُختَر بعد؛ تراخيص مكتبة Adhan وخط Readex موجودة مع ملفاتهما.

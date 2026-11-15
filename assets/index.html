@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0d1715">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>سَكَن • رفيق الدراسة</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="leaf" viewBox="0 0 24 24"><path d="M20 4C8 2 2 9 6 16c5 5 13 0 14-12ZM5 21 16 10"/></symbol>
+  <symbol id="settings" viewBox="0 0 24 24"><path d="m10 3-1 3-3 1-3 3 2 3 1 3 4 1 2 4 3-2 3-1 1-4 2-2-2-3-1-3-4-1-2-2Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="expand" viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
+  <symbol id="pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+  <symbol id="reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+  <symbol id="rain" viewBox="0 0 24 24"><path d="M6 14a4 4 0 0 1-1-8 6 6 0 0 1 11-1 4.5 4.5 0 0 1 2 9M7 17l-1 3m6-3-1 3m6-3-1 3"/></symbol>
+  <symbol id="waves" viewBox="0 0 24 24"><path d="M2 6q3-4 6 0t6 0 6 0M2 12q3-4 6 0t6 0 6 0M2 18q3-4 6 0t6 0 6 0"/></symbol>
+  <symbol id="water" viewBox="0 0 24 24"><path d="M12 3c-3 5-7 8-7 12a7 7 0 0 0 14 0c0-4-4-7-7-12ZM8 15q0 3 3 3"/></symbol>
+  <symbol id="noise" viewBox="0 0 24 24"><path d="M3 10v4m4-8v12m5-15v18m5-15v12m4-8v4"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+  <symbol id="moon" viewBox="0 0 24 24"><path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11Z"/></symbol>
+  <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Zm12 0q3 3 0 6m3-9q6 6 0 12"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 6-7 11-7 11S5 16 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
+</defs></svg>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><svg class="brand-mark"><use href="#leaf"/></svg><span>سَكَن</span><span class="brand-sub">رفيق الدراسة</span></div>
+    <div class="header-actions">
+      <button id="miniSound" class="icon-btn far-only" aria-label="تشغيل أو إيقاف صوت الدراسة"><svg><use href="#volume"/></svg></button>
+      <button id="displayMode" class="icon-btn" aria-label="وضع العرض من بعيد" aria-pressed="false"><svg><use href="#expand"/></svg></button>
+      <button id="openSettings" class="icon-btn" aria-label="الإعدادات"><svg><use href="#settings"/></svg></button>
+    </div>
+  </header>
+  <section class="clock-area" aria-label="الوقت الآن">
+    <div class="clock-label"><span class="live-dot"></span><span>الوقت الآن</span><span id="clockZone"></span></div>
+    <div class="clock-line"><time id="clock" class="clock digits" dir="ltr">--:--</time><span id="ampm" class="muted"></span></div>
+    <div id="date" class="muted small"></div>
+  </section>
+  <main class="workspace">
+    <section class="timer-card" aria-label="مؤقّت الدراسة">
+      <div class="section-row"><span id="phaseLabel" class="eyebrow">وقت التركيز</span><span id="roundLabel" class="muted small">جلسة جديدة</span></div>
+      <label class="task-row"><span class="sr-only">المادة أو هدف الجلسة</span><input id="task" maxlength="120" placeholder="شو بدك تدرس اليوم؟" autocomplete="off"></label>
+      <div class="timer-wrap"><div id="timer" class="timer digits" dir="ltr" role="timer" aria-label="الوقت المتبقي">25:00</div><div id="timerHint" class="muted small">خطوة صغيرة، وتركيز أعمق</div></div>
+      <div id="progress" class="progress" role="progressbar" aria-label="تقدّم الجلسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressFill"></div></div>
+      <div class="timer-actions">
+        <button id="start" class="primary"><svg><use id="startIcon" href="#play"/></svg><span id="startLabel">ابدأ التركيز</span></button>
+        <button id="reset" class="secondary square" aria-label="إعادة ضبط المؤقّت"><svg><use href="#reset"/></svg></button>
+        <button id="nextPhase" class="secondary">للراحة</button>
+      </div>
+      <div class="presets" role="group" aria-label="أنماط الدراسة والراحة">
+        <button data-focus="25" data-rest="5" aria-pressed="true"><span dir="ltr">25 / 5</span></button>
+        <button data-focus="50" data-rest="10" aria-pressed="false"><span dir="ltr">50 / 10</span></button>
+        <button data-focus="20" data-rest="15" aria-pressed="false"><span dir="ltr">20 / 15</span></button>
+        <button id="customTimer">مخصّص</button>
+      </div>
+      <p id="presetHint" class="muted tiny preset-hint">دقائق دراسة / دقائق راحة</p>
+      <p id="timerMessage" class="session-message" hidden aria-live="polite"></p>
+    </section>
+    <section class="prayer-card" aria-label="الصلاة القادمة">
+      <div id="prayerEmpty" class="prayer-empty"><svg class="prayer-symbol"><use href="#sun"/></svg><div class="eyebrow">دراستك بين صلاتين</div><p>اضبط مدينتك لنحسب الصلاة الجاية</p><button id="setupLocation" class="gold-btn"><svg><use href="#pin"/></svg>اختَر مدينتك</button></div>
+      <div id="prayerContent" hidden>
+        <div class="section-row"><span class="eyebrow">الصلاة الجاية</span><button id="cityButton" class="text-btn small"><span id="cityLabel"></span><svg><use href="#pin"/></svg></button></div>
+        <div class="prayer-heading"><div><h1 id="prayerName">الظهر</h1><div class="muted small">الأذان <time id="prayerAt" dir="auto">--:--</time><span id="tomorrow"></span></div></div><svg class="prayer-symbol"><use id="prayerIcon" href="#sun"/></svg></div>
+        <div class="countdown-label">باقي للأذان</div>
+        <div id="prayerCountdown" class="prayer-countdown digits" dir="ltr">--:--:--</div>
+        <div class="prayer-footer"><button id="fitPrayer" class="gold-btn small">جلسة قبل الصلاة</button><button id="openPrayers" class="text-btn small">مواقيت اليوم</button></div>
+      </div>
+      <p id="prayerError" class="error small" hidden></p>
+    </section>
+  </main>
+  <section class="audio-section" aria-label="أجواء الدراسة">
+    <div class="section-row"><div><span class="eyebrow">أجواء الدراسة</span><span id="soundStatus" class="muted small"> • بدون إنترنت</span></div><button id="soundToggle" class="sound-toggle" aria-pressed="false"><svg><use id="soundIcon" href="#play"/></svg><span id="soundToggleLabel">تشغيل</span></button></div>
+    <div class="sound-choices" role="group" aria-label="اختر صوتًا">
+      <button data-sound="rain" aria-pressed="true"><svg><use href="#rain"/></svg><span>مطر</span></button>
+      <button data-sound="ocean" aria-pressed="false"><svg><use href="#waves"/></svg><span>بحر</span></button>
+      <button data-sound="stream" aria-pressed="false"><svg><use href="#water"/></svg><span>مياه</span></button>
+      <button data-sound="brown" aria-pressed="false"><svg><use href="#noise"/></svg><span>ضجيج بني</span></button>
+    </div>
+    <label class="volume-row"><svg aria-hidden="true"><use href="#volume"/></svg><span class="sr-only">مستوى صوت الأجواء</span><input id="volume" type="range" min="0" max="100" value="55"><output id="volumeValue">55%</output></label>
+  </section>
+  <footer class="bottom-meta"><span><span class="live-dot"></span>تركيزك اليوم <b id="todayStudy">٠ دقيقة</b></span><span id="todayRounds">٠ جلسات</span></footer>
+  <button id="permissionsHint" class="permission-hint" hidden>للتنبيه والشاشة مسكّرة، فعّل أذونات التنبيهات والتوقيت</button>
+</div>
+
+<dialog id="customDialog" class="sheet small-sheet" aria-labelledby="customTitle">
+  <div class="sheet-header"><h2 id="customTitle">على إيقاعك</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
+  <p class="muted">اختَر مدة تناسب دراستك وراحتك.</p>
+  <form id="customForm">
+    <div class="field-pair"><label>دراسة بالدقائق<input id="focusMinutes" type="number" min="1" max="240" value="25" required inputmode="numeric"></label><label>راحة بالدقائق<input id="breakMinutes" type="number" min="1" max="120" value="5" required inputmode="numeric"></label></div>
+    <button class="primary full" type="submit">احفظ النمط</button>
+  </form>
+</dialog>
+
+<dialog id="prayersDialog" class="sheet small-sheet" aria-labelledby="prayersTitle">
+  <div class="sheet-header"><h2 id="prayersTitle">مواقيت اليوم</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
+  <p id="prayerDateLabel" class="muted small"></p>
+  <div id="prayerRows" class="prayer-rows"></div>
+  <p class="muted tiny">المواقيت محسوبة حسب موقعك والطريقة اللي اخترتها. قارنها بتقويم مسجدك أول مرة.</p>
+</dialog>
+
+<dialog id="settingsDialog" class="sheet" aria-labelledby="settingsTitle">
+  <div class="sheet-header"><h2 id="settingsTitle">خلّي سَكَن على ذوقك</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
+  <section class="settings-group">
+    <h3>الموقع ومواقيت الصلاة</h3>
+    <label>المدينة<select id="citySelect"><option value="">اختَر مدينتك</option></select></label>
+    <button id="useLocation" class="secondary full"><svg><use href="#pin"/></svg>استخدم موقعي الحالي</button>
+    <form id="manualLocation" hidden>
+      <label>اسم المدينة<input id="manualCity" maxlength="80" value="مدينتي" required></label>
+      <div class="field-pair"><label>خط العرض<input id="manualLat" type="number" min="-90" max="90" step="any" required placeholder="31.77"></label><label>خط الطول<input id="manualLon" type="number" min="-180" max="180" step="any" required placeholder="35.21"></label></div>
+      <label>المنطقة الزمنية<input id="manualZone" required dir="ltr" placeholder="Asia/Hebron"></label>
+      <button type="submit" class="secondary full">احفظ الموقع</button>
+    </form>
+    <label>طريقة الحساب<select id="method"><option value="MUSLIM_WORLD_LEAGUE">رابطة العالم الإسلامي</option><option value="EGYPTIAN">الهيئة المصرية للمساحة</option><option value="UMM_AL_QURA">أم القرى — مكة</option><option value="KARACHI">جامعة كراتشي</option><option value="DUBAI">دبي</option><option value="QATAR">قطر</option><option value="KUWAIT">الكويت</option><option value="MOONSIGHTING_COMMITTEE">لجنة رؤية الهلال</option><option value="SINGAPORE">سنغافورة</option><option value="NORTH_AMERICA">أمريكا الشمالية — ISNA</option><option value="CUSTOM">زوايا مخصّصة</option></select></label>
+    <div id="customAngles" class="field-pair" hidden><label>زاوية الفجر<input id="fajrAngle" type="number" min="10" max="23" step="0.1"></label><label>زاوية العشاء<input id="ishaAngle" type="number" min="10" max="23" step="0.1"></label></div>
+    <label class="toggle-row"><span>العصر على المذهب الحنفي</span><input id="hanafi" type="checkbox" role="switch"></label>
+    <details><summary>تعديل المواقيت بالدقائق</summary><div id="offsetFields" class="offset-fields"></div><p class="muted tiny">الموجب يؤخّر الموعد، والسالب يقدّمه. أم القرى يحسب العشاء بعد المغرب بـ٩٠ دقيقة؛ عدّله في رمضان حسب تقويمك المعتمد.</p></details>
+    <p class="muted tiny">اختَر الطريقة المعتمدة عندك، وراجع المواقيت مع مسجدك أول مرة. تقدر تعدّل كل صلاة بالدقائق. لا تحتاج إذن الموقع إذا اخترت المدينة يدويًا.</p>
+  </section>
+  <section class="settings-group">
+    <h3>جلسة تراعي صلاتك</h3>
+    <label class="toggle-row"><span>وقّف الجلسة عند الصلاة</span><input id="pauseAtPrayer" type="checkbox" role="switch"></label>
+    <p class="muted tiny">المؤقّت ينحفظ والصوت يوقف عند دخول الوقت. إكمال الجلسة بإيدك بعد الصلاة.</p>
+    <label class="toggle-row"><span>تنبيه خفيف عند الصلاة</span><input id="prayerAlerts" type="checkbox" role="switch"></label>
+    <label class="toggle-row"><span>ذكّرني قبلها بخمس دقائق</span><input id="prePrayer" type="checkbox" role="switch"></label>
+  </section>
+  <section class="settings-group">
+    <h3>الشاشة والصوت</h3>
+    <label class="toggle-row"><span>خلّي الشاشة مضوّية أثناء فتح التطبيق</span><input id="keepScreen" type="checkbox" role="switch"></label>
+    <label class="toggle-row"><span>أوقف الصوت مع نهاية أو إيقاف الجلسة</span><input id="stopSoundWithTimer" type="checkbox" role="switch"></label>
+    <label>المظهر<select id="theme"><option value="dark">ليلي هادئ</option><option value="light">نهاري</option></select></label>
+  </section>
+  <section class="settings-group">
+    <h3>التنبيه والشاشة مسكّرة</h3>
+    <button id="allowNotifications" class="permission-row"><span>إذن التنبيهات</span><span id="notificationsStatus"></span></button>
+    <button id="allowExact" class="permission-row"><span>التوقيت الدقيق</span><span id="exactStatus"></span></button>
+    <p class="muted tiny">اضغط كل إذن لتفعيله. بدون التوقيت الدقيق ممكن يتأخر التنبيه بالخلفية. بعض الجوالات تحتاج السماح للتطبيق بالعمل بالخلفية من إعدادات البطارية.</p>
+  </section>
+  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٠ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. الأصوات مولّدة ومحفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
+Copyright (c) 2016 Batoul Apps
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre></details></div>
+</dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# Generated files and local tooling
+/build/
+/outputs/
+/android-sdk/
+/downloads/
+/signing/
+.gradle/
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+*.class
+*.dex
+*.apk
+*.aab
+*.idsig
+/tests/prayer-fixture.js
+
+# Signing keys, credentials and machine-specific configuration
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.pem
+*.key
+*.mobileprovision
+local.properties
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini

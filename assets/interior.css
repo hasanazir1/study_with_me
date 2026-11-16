@@ -1,17 +1,5 @@
 /* Furniture positions use the desk surface and wall of each camera composition. */
 .app.studio{display:block;position:relative;isolation:isolate;overflow:hidden;width:100%;height:100%;max-width:none;margin:0;padding:0;border-radius:0;background:#79634b;color:#372c21}
-.interior,.room-light,.window-air{position:absolute;inset:0;pointer-events:none}
-.interior{background:url("study.webp") center / 100% 100% no-repeat;z-index:-3}
-.room-light{z-index:-2;background:#183b4f;opacity:0;transition:opacity .85s}
-[data-scene=rain] .room-light{opacity:.13}[data-scene=nature] .room-light{background:#fff0b9;opacity:.08}
-[data-scene=fire] .room-light{background:#c47739;opacity:.24;animation:hearth 4s ease-in-out infinite}
-[data-scene=cafe] .room-light{background:#ae6636;opacity:.16}
-[data-scene=night] .room-light{opacity:.63}:root[data-theme=dark] .interior{filter:brightness(.56) saturate(.7)}
-.window-air{z-index:-1;right:80%;bottom:33%;overflow:hidden}
-.window-air::after{content:'';position:absolute;inset:-12%;opacity:0}
-[data-scene=rain] .window-air::after{background:repeating-linear-gradient(104deg,transparent 0 29px,#d4e4da70 30px,transparent 31px 68px);mask-image:repeating-linear-gradient(0deg,#000 0 9px,transparent 15px 43px);opacity:.48;animation:drizzle 1.8s linear infinite}
-[data-scene=nature] .window-air::after,[data-scene=cafe] .window-air::after,[data-scene=night] .window-air::after{background:radial-gradient(ellipse at 20% 20%,#fff7dc 0 1px,transparent 2px),radial-gradient(ellipse at 70% 80%,#ffe2a7 0 2px,transparent 3px);background-size:57px 81px;animation:twinkle 6s ease-in-out infinite}
-@keyframes drizzle{to{transform:translate(-4px,43px)}}@keyframes twinkle{0%,100%{opacity:.14}50%{opacity:.65;transform:translateY(-3px)}}@keyframes hearth{50%{opacity:.31}}
 .prop{position:absolute}.studio button:focus-visible{outline:3px solid #fff3b5;outline-offset:2px}.studio button:hover{filter:brightness(1.08)}
 .brass-clock{--diam:min(37vw,54vh,430px);width:var(--diam);height:var(--diam);top:34%;left:50%;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(128deg,#e5cc88,#746344 28%,#473a2c 45%,#dfc987 70%,#69543d);padding:clamp(6px,.8vw,13px);box-shadow:3px 6px 3px #2c201b77,9px 16px 19px #231a1960,inset 0 0 0 1px #e7d7a7}
 .clock-glass{position:absolute;inset:3%;border-radius:50%;background:radial-gradient(ellipse at 28% 10%,#486353,#273a31 54%,#162820);box-shadow:inset 2px 5px 8px #0f1b18,0 0 0 1px #5e543e;color:#f7edcc}
@@ -33,7 +21,7 @@
 .journal{right:18%;bottom:15%;width:clamp(140px,20vw,250px);min-height:clamp(63px,13vh,140px);display:grid;justify-items:center;align-content:center;gap:2px;transform:perspective(550px) rotateX(27deg) rotate(-7deg);background:linear-gradient(90deg,#495848 0 7%,#313f33 8%,#53614b 10%,#41513e 100%);color:#f6e8bd;box-shadow:0 3px #c7b68f,0 5px #daceb0,1px 7px #384430,6px 12px 12px #33271788;border-radius:3px 9px 7px 3px;border:1px solid #616d55}
 .journal strong{font-size:clamp(16px,2.8vh,28px);font-weight:500}.journal small,.journal #date,.journal .foil{display:block;color:#e6d5a9;font-size:10px}.journal .foil{font-size:8px}
 .clock-options{display:flex;gap:8px;margin:15px 0}.clock-options button{flex:1}.ledger #entries{padding:0}.ledger li{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:10px 0}.ledger li strong,.ledger li time{display:block;overflow-wrap:anywhere}.ledger li time{font-size:12px;color:var(--muted)}.ledger li button{background:var(--soft);padding:8px;border-radius:8px}.ledger #entryStatus{font-size:12px;margin-top:13px}.studio .timer-ring{pointer-events:none}
-@media(orientation:portrait){.interior{background-image:url('study-tall.webp')}.brass-clock{--diam:min(66vw,30vh,350px);top:29%;left:56%}.almanac{top:55%;left:68%;width:min(45vw,190px)}.window-tag{left:4%;top:56%}.radio{left:25%;bottom:23%;width:44%;height:9vh;padding:5px}.speaker{width:12%}.journal{right:6%;bottom:12%;width:46%;min-height:11vh}.switchplate{top:3%;right:4%}}
+@media(orientation:portrait){.brass-clock{--diam:min(66vw,30vh,350px);top:29%;left:56%}.almanac{top:55%;left:68%;width:min(45vw,190px)}.window-tag{left:4%;top:56%}.radio{left:25%;bottom:23%;width:44%;height:9vh;padding:5px}.speaker{width:12%}.journal{right:6%;bottom:12%;width:46%;min-height:11vh}.switchplate{top:3%;right:4%}}
 @media(max-height:400px) and (orientation:landscape){.brass-clock{--diam:min(34vw,60vh);top:34%}.clock-keys{bottom:14%}.clock-keys button{padding:2px 5px;min-height:25px;font-size:9px}.almanac{left:78%;top:36%;padding-top:8px}.switchplate{top:3%;right:1%}.radio{bottom:19%}.journal{bottom:11%}.window-tag{font-size:10px}}
 @media(max-height:620px) and (orientation:portrait){.brass-clock{--diam:min(64vw,36vh);top:26%}.almanac{top:55%}.clock-keys button{padding:3px 5px;min-height:26px}}
 :root[data-effects=light] .studio *,:root[data-effects=light] .studio *::after{animation:none!important;transition:none!important}

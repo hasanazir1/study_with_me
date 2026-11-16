@@ -15,7 +15,9 @@
     const scene=rooms.find(room=>room.id===snapshot.settings.visualScene)||rooms[0];
     if(current!==scene.id){
       current=scene.id;
-      $('roomPanel').dataset.scene=scene.id;
+      const panel=$('roomPanel');
+      panel.dataset.scene=scene.id;
+      for(const [key,value] of Object.entries(scene.colors))panel.style.setProperty('--'+key,value);
       $('roomName').textContent=scene.name;$('roomUse').setAttribute('href','#'+scene.icon);
 
       document.querySelectorAll('[data-room-choice]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.roomChoice===scene.id)));
@@ -27,6 +29,11 @@
   }
   function connect(callbacks) {
     hooks=callbacks;
+    const camera=window.matchMedia('(orientation: portrait)');
+    const compose=()=>document.querySelector('.room-art').setAttribute('viewBox',camera.matches?'0 0 380 700':'0 0 640 400');
+    compose();
+    camera.addListener(compose);
+    document.querySelector('.window-set').addEventListener('click',()=>$('openRoom').click());
     rooms.forEach(room=>{
       const button=document.createElement('button');button.type='button';button.dataset.roomChoice=room.id;button.setAttribute('aria-pressed','false');
       const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');

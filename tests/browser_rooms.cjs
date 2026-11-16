@@ -34,7 +34,7 @@ let browser;
   await page.locator('[data-room-choice="night"]').click();assert(await page.locator('#roomSound').isHidden());
   await page.locator('[data-room-choice="nature"]').click();await page.locator('#roomSound').click();assert.equal(await page.evaluate(()=>window.__preview.settings.sound),'stream');
   await page.locator('#roomDialog [data-close]').click();await page.waitForTimeout(250);
-  if(process.env.SAKIN_SCREENSHOTS&&w!==568){fs.mkdirSync(process.env.SAKIN_SCREENSHOTS,{recursive:true});await page.screenshot({path:path.join(process.env.SAKIN_SCREENSHOTS,`sakin-studio-${w}x${h}.png`)});}
+  if(process.env.SAKIN_SCREENSHOTS&&w!==568){fs.mkdirSync(process.env.SAKIN_SCREENSHOTS,{recursive:true});await page.screenshot({path:path.join(process.env.SAKIN_SCREENSHOTS,`sakin-illustrated-${w}x${h}.png`)});}
   console.log('PASS room, controls, six scenes and independent sound:',w+'x'+h);
  }
  await page.setViewportSize({width:396,height:806});await page.reload();await page.waitForTimeout(250);
@@ -59,7 +59,7 @@ let browser;
  await page.locator('#clockAdjust').click();await page.locator('#reset').click();assert.equal(await page.evaluate(()=>window.__preview.timer.remainingMs),60000);
  await page.locator('#clockDialog [data-close]').click();await page.waitForTimeout(250);
  await page.emulateMedia({reducedMotion:'reduce'});
- assert.equal(await page.locator('.window-air').evaluate(el=>getComputedStyle(el,'::after').animationName),'none');
+ assert.equal(await page.locator('.room-art .room-rain').evaluate(el=>getComputedStyle(el).animationName),'none');
  const ids=await page.locator('[id]').evaluateAll(els=>els.map(el=>el.id));assert.equal(new Set(ids).size,ids.length);
  assert.deepEqual(errors,[]);console.log('PASS rapid changes, unique IDs, persisted appointments, reduced motion, timer controls and no JS errors.');
 })().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();server.kill();});

@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-Current build: Android 1.3.1 / versionCode 6. Interact through the clock, almanac, journal, window and radio. See docs/STUDIO_TEST_AR.md.
+Current build: Android 1.3.2 / versionCode 7. The owner wants the original 1.3.0 illustrated room perspective. Interact through the clock, almanac, journal, window and radio. See docs/STUDIO_TEST_AR.md.
 
 ## Product constraints
 

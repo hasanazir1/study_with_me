@@ -1,0 +1,49 @@
+/* Furniture positions use the desk surface and wall of each camera composition. */
+.app.studio{display:block;position:relative;isolation:isolate;overflow:hidden;width:100%;height:100%;max-width:none;margin:0;padding:0;border-radius:0;background:#79634b;color:#372c21}
+.interior,.room-light,.window-air{position:absolute;inset:0;pointer-events:none}
+.interior{background:url("study.webp") center / 100% 100% no-repeat;z-index:-3}
+.room-light{z-index:-2;background:#183b4f;opacity:0;transition:opacity .85s}
+[data-scene=rain] .room-light{opacity:.13}[data-scene=nature] .room-light{background:#fff0b9;opacity:.08}
+[data-scene=fire] .room-light{background:#c47739;opacity:.24;animation:hearth 4s ease-in-out infinite}
+[data-scene=cafe] .room-light{background:#ae6636;opacity:.16}
+[data-scene=night] .room-light{opacity:.63}:root[data-theme=dark] .interior{filter:brightness(.56) saturate(.7)}
+.window-air{z-index:-1;right:80%;bottom:33%;overflow:hidden}
+.window-air::after{content:'';position:absolute;inset:-12%;opacity:0}
+[data-scene=rain] .window-air::after{background:repeating-linear-gradient(104deg,transparent 0 29px,#d4e4da70 30px,transparent 31px 68px);mask-image:repeating-linear-gradient(0deg,#000 0 9px,transparent 15px 43px);opacity:.48;animation:drizzle 1.8s linear infinite}
+[data-scene=nature] .window-air::after,[data-scene=cafe] .window-air::after,[data-scene=night] .window-air::after{background:radial-gradient(ellipse at 20% 20%,#fff7dc 0 1px,transparent 2px),radial-gradient(ellipse at 70% 80%,#ffe2a7 0 2px,transparent 3px);background-size:57px 81px;animation:twinkle 6s ease-in-out infinite}
+@keyframes drizzle{to{transform:translate(-4px,43px)}}@keyframes twinkle{0%,100%{opacity:.14}50%{opacity:.65;transform:translateY(-3px)}}@keyframes hearth{50%{opacity:.31}}
+.prop{position:absolute}.studio button:focus-visible{outline:3px solid #fff3b5;outline-offset:2px}.studio button:hover{filter:brightness(1.08)}
+.brass-clock{--diam:min(37vw,54vh,430px);width:var(--diam);height:var(--diam);top:34%;left:50%;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(128deg,#e5cc88,#746344 28%,#473a2c 45%,#dfc987 70%,#69543d);padding:clamp(6px,.8vw,13px);box-shadow:3px 6px 3px #2c201b77,9px 16px 19px #231a1960,inset 0 0 0 1px #e7d7a7}
+.clock-glass{position:absolute;inset:3%;border-radius:50%;background:radial-gradient(ellipse at 28% 10%,#486353,#273a31 54%,#162820);box-shadow:inset 2px 5px 8px #0f1b18,0 0 0 1px #5e543e;color:#f7edcc}
+.studio #timerStage{position:absolute;inset:1%;display:grid;place-items:center;min-height:0;width:auto;height:auto}
+.studio #timerOrbit{width:100%;height:100%;max-width:none;max-height:none}.studio .timer-ring{width:100%;height:100%}.studio .ring-track{stroke:#d4cb9834}.studio .ring-progress{stroke:#dece92}.studio .timer-center{gap:0;color:#f5edce}.studio #timer{font-size:calc(var(--diam)*.20);font-weight:420;color:#f5edce;line-height:1.13}
+.studio .phase-label{font-size:clamp(10px,1.6vh,17px);color:#d0dabb}.studio :is(.orbit-leaf,.duration-caption,#timerHint,.orbit-glow){display:none}
+.maker,.live-clock,.clock-keys{position:absolute;z-index:2;text-align:center;left:0;right:0}
+.maker{top:13%;color:#cdbb82;font-size:clamp(8px,1.5vh,13px);pointer-events:none}.maker span{margin:0 .4em}.live-clock{top:23%;font:clamp(13px,2.6vh,24px)/1.2 Readex;color:#f5eed3}.studio #clock{font-size:inherit}
+.clock-keys{bottom:16%;display:flex;justify-content:center;gap:4px}.clock-keys button{display:flex;align-items:center;justify-content:center;gap:2px;background:#e6d6a6;color:#342f23;border-radius:7px;padding:3px 8px;min-height:32px;font-size:clamp(9px,1.4vh,13px);box-shadow:0 2px 1px #1117}.clock-keys button svg{width:13px;height:13px}
+.studio #autoBreakBanner,.studio #timerMessage{z-index:4;bottom:12%;max-width:90%;margin:auto}.studio #timerMessage{background:#fcf2d8;color:#342f23}
+.studio[data-session=focus] .maker span{color:#aee8a9}:root[data-status=paused] .phase-label{color:#ffd39d}
+.almanac{left:75%;top:38%;width:clamp(125px,15vw,230px);transform:translate(-50%,-50%) rotate(2deg);text-align:center;color:#4d3f2b;background:linear-gradient(97deg,#e3d7b8,#fcf3d9 45%,#e9dfc4);padding:clamp(10px,2.4vh,26px) 8px 6px;box-shadow:0 2px #ccc1a3,0 4px #eee4c9,2px 6px 1px #a69876,4px 10px 12px #39291755}
+.pin{position:absolute;top:2px;left:48%;width:8px;height:8px;border-radius:50%;background:radial-gradient(at 30% 20%,#eed7a8,#80663a);box-shadow:1px 2px 2px #0006}
+.almanac>small{font-size:10px;letter-spacing:.04em;border-bottom:1px solid #99896a66;display:block;padding-bottom:3px}.studio #prayerContent{display:block;padding:0;background:none;box-shadow:none}.almanac button{background:none;color:inherit;width:100%;padding:3px}.almanac button strong{font-size:clamp(17px,2.7vh,29px)}.almanac time{font-size:12px}.almanac button small,.almanac b{display:block}.almanac button small{font-size:9px}.almanac b{font-variant-numeric:tabular-nums;font-size:clamp(16px,2.3vh,24px);line-height:1.15}.almanac #cityButton{font-size:10px}.almanac svg{width:12px;height:12px}.studio [hidden]{display:none!important}
+.window-tag,.switchplate{background:linear-gradient(110deg,#c8af7c,#8f7a53);color:#2a271f;box-shadow:1px 3px 1px #58452f,2px 5px 8px #33241a66;border:1px solid #86744f;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:6px}
+.window-tag{left:4%;top:53%;transform:rotate(-2deg);min-height:36px;padding:5px 10px;font-size:12px}.window-tag svg{width:16px}.switchplate{right:2%;top:8%;gap:1px;padding:3px}.switchplate button{background:#ebddbe;border-radius:2px;color:#594731;padding:6px;min-width:31px;min-height:34px}.switchplate svg{width:16px;height:16px}
+.radio{left:23%;bottom:23%;transform:translateX(-50%) rotate(-2deg);width:clamp(145px,21vw,320px);height:clamp(62px,12vh,115px);padding:7px 12px;display:flex;align-items:center;justify-content:space-around;gap:6px;border:4px ridge #a17d50;border-radius:12px;background:linear-gradient(165deg,#c8a26a,#926840 65%,#735034);box-shadow:1px 4px #513823,4px 9px 8px #36231588;color:#f2e1bc}
+.radio #openAudio{display:grid;gap:3px;background:#293c31;color:#e9dcae;box-shadow:inset 1px 2px 3px #151d13;padding:5px 8px;flex:1;min-width:0;border-radius:3px;font-size:clamp(9px,1.4vw,15px)}.radio small{font-size:8px;color:#d6cbab}.radio #soundToggle{width:34px;height:34px;border-radius:50%;background:radial-gradient(at 40% 25%,#efe4bd,#bca474 70%,#836c47);color:#453821;box-shadow:1px 3px 2px #45341d}.radio svg{width:16px}.speaker{width:17%;height:80%;background:repeating-linear-gradient(0deg,#685138 0 2px,#bc9c70 3px 5px);border-radius:4px}
+.journal{right:18%;bottom:15%;width:clamp(140px,20vw,250px);min-height:clamp(63px,13vh,140px);display:grid;justify-items:center;align-content:center;gap:2px;transform:perspective(550px) rotateX(27deg) rotate(-7deg);background:linear-gradient(90deg,#495848 0 7%,#313f33 8%,#53614b 10%,#41513e 100%);color:#f6e8bd;box-shadow:0 3px #c7b68f,0 5px #daceb0,1px 7px #384430,6px 12px 12px #33271788;border-radius:3px 9px 7px 3px;border:1px solid #616d55}
+.journal strong{font-size:clamp(16px,2.8vh,28px);font-weight:500}.journal small,.journal #date,.journal .foil{display:block;color:#e6d5a9;font-size:10px}.journal .foil{font-size:8px}
+.clock-options{display:flex;gap:8px;margin:15px 0}.clock-options button{flex:1}.ledger #entries{padding:0}.ledger li{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:10px 0}.ledger li strong,.ledger li time{display:block;overflow-wrap:anywhere}.ledger li time{font-size:12px;color:var(--muted)}.ledger li button{background:var(--soft);padding:8px;border-radius:8px}.ledger #entryStatus{font-size:12px;margin-top:13px}.studio .timer-ring{pointer-events:none}
+@media(orientation:portrait){.interior{background-image:url('study-tall.webp')}.brass-clock{--diam:min(66vw,30vh,350px);top:29%;left:56%}.almanac{top:55%;left:68%;width:min(45vw,190px)}.window-tag{left:4%;top:56%}.radio{left:25%;bottom:23%;width:44%;height:9vh;padding:5px}.speaker{width:12%}.journal{right:6%;bottom:12%;width:46%;min-height:11vh}.switchplate{top:3%;right:4%}}
+@media(max-height:400px) and (orientation:landscape){.brass-clock{--diam:min(34vw,60vh);top:34%}.clock-keys{bottom:14%}.clock-keys button{padding:2px 5px;min-height:25px;font-size:9px}.almanac{left:78%;top:36%;padding-top:8px}.switchplate{top:3%;right:1%}.radio{bottom:19%}.journal{bottom:11%}.window-tag{font-size:10px}}
+@media(max-height:620px) and (orientation:portrait){.brass-clock{--diam:min(64vw,36vh);top:26%}.almanac{top:55%}.clock-keys button{padding:3px 5px;min-height:26px}}
+:root[data-effects=light] .studio *,:root[data-effects=light] .studio *::after{animation:none!important;transition:none!important}
+:root[data-visible=false] .studio *,:root[data-visible=false] .studio *::after{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.studio *,.studio *::after{animation:none!important;transition:none!important}}
+
+
+.studio .live-clock #clock,.studio .live-clock #ampm{color:#f9efd5;font-size:inherit}
+.studio .maker svg{width:1.3em;height:1.3em;color:#e4d297}
+:root[data-idle=true] .clock-keys{opacity:.7}.clock-keys{transition:opacity .35s ease}
+:root[data-waiting=true] .clock-keys{visibility:hidden}
+.studio #autoBreakBanner{background:#f4eacf;color:#453826}
+.studio .radio #openAudio{padding:4px;line-height:1.5}

@@ -52,7 +52,7 @@ public final class MainActivity extends Activity {
         FrameLayout root=new FrameLayout(this);root.setBackgroundColor(Color.rgb(250,247,242));
         web=new WebView(this);web.setBackgroundColor(Color.rgb(250,247,242));
         web.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        WebSettings config=web.getSettings();config.setJavaScriptEnabled(true);config.setDomStorageEnabled(false);
+        WebSettings config=web.getSettings();config.setJavaScriptEnabled(true);config.setDomStorageEnabled(true);
         config.setAllowFileAccess(false);config.setAllowContentAccess(false);config.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         config.setSupportMultipleWindows(false);config.setTextZoom(100);
         web.addJavascriptInterface(new Bridge(),"Sakin");
@@ -63,8 +63,8 @@ public final class MainActivity extends Activity {
                 if("https".equals(uri.getScheme())&&"appassets.sakin.local".equals(uri.getHost())){
                     String path=uri.getPath();if(path==null||path.contains(".."))return blocked();
                     if(path.equals("/"))path="/index.html";
-                    String mime=path.endsWith(".css")?"text/css":path.endsWith(".js")?"application/javascript":path.endsWith(".ttf")?"font/ttf":path.endsWith(".txt")?"text/plain":path.endsWith(".wav")?"audio/wav":"text/html";
-                    try{return new WebResourceResponse(mime,mime.startsWith("font/")||mime.startsWith("audio/")?null:"UTF-8",getAssets().open(path.substring(1)));}catch(Exception e){return blocked();}
+                    String mime=path.endsWith(".webp")?"image/webp":path.endsWith(".css")?"text/css":path.endsWith(".js")?"application/javascript":path.endsWith(".ttf")?"font/ttf":path.endsWith(".txt")?"text/plain":path.endsWith(".wav")?"audio/wav":"text/html";
+                    try{return new WebResourceResponse(mime,mime.startsWith("image/")||mime.startsWith("font/")||mime.startsWith("audio/")?null:"UTF-8",getAssets().open(path.substring(1)));}catch(Exception e){return blocked();}
                 }
                 return blocked();
             }

@@ -66,7 +66,7 @@
   }
   function sizeOrbit(){
     const stage=$('timerStage');
-    const maximum=window.innerWidth>=1000?350:300;
+    const maximum=360;
     const size=Math.max(60,Math.min(stage.clientWidth-4,stage.clientHeight-4,maximum));
     $('timerOrbit').style.setProperty('--orbit-size',Math.round(size)+'px');
   }
@@ -128,7 +128,7 @@
   function render() {
     const t=snapshot.timer,s=snapshot.settings;
     root.dataset.theme=s.theme||'light';
-    root.dataset.phase=t.phase;
+    root.dataset.phase=t.phase;root.dataset.status=t.status;
     root.dataset.running=String(t.status==='running');
     root.dataset.effects=reduced()?'light':'full';
     root.dataset.visible=String(!document.hidden);
@@ -142,7 +142,7 @@
     $('date').textContent=new Intl.DateTimeFormat('ar',{timeZone:zone(),weekday:'long',day:'numeric',month:'long'}).format(new Date(snapshot.now));
     renderDigits(countdown(t.remainingMs));
     $('timer').classList.toggle('long',t.remainingMs>=100*60000);
-    $('phaseLabel').textContent=t.phase==='focus'?'وقت التركيز':'وقت تستريح';
+    $('phaseLabel').textContent=t.status==='paused'?'إيقاف مؤقّت':t.phase==='focus'?'وقت التركيز':'وقت تستريح';
     $('roundLabel').textContent=t.phase==='focus'?'جلسة '+arabic(snapshot.todayRounds+1):'استراحة تستاهلها';
     $('timerHint').textContent=t.status==='finished'?(t.phase==='focus'?'أحسنت. خذ راحتك، وبعدين كمّل.':'نَفَس جديد، وجلسة جديدة'):t.status==='paused'?'جلستك محفوظة، كمّل على راحتك':t.phase==='break'?'ارفع عيونك عن الشاشة وخذ نَفَس':'خطوة صغيرة، وتركيز أعمق';
     $('autoBreakBanner').hidden=!t.autoBreakRemainingMs;
@@ -167,6 +167,7 @@
     const next=nextPrayer();
     $('prayerEmpty').hidden=Boolean(next);$('prayerContent').hidden=!next;
     $('prayerError').hidden=!snapshot.prayerError;$('prayerError').textContent=snapshot.prayerError||'';
+    $('fitPrayer').disabled=!next||active||next.time-snapshot.now<120000;
     if(next){
       $('prayerName').textContent=next.name;$('cityLabel').textContent=s.city;
       $('cityButton').setAttribute('aria-label','ضبط المدينة: '+s.city);
@@ -223,7 +224,7 @@
       input.nextElementSibling.textContent=input.value+'%';
     });
   }
-  function open(dialog){revealControls();if(!dialog.open)dialog.showModal();clearTimeout(idleTimer);}
+  function open(dialog){const previous=document.querySelector('dialog[open]');if(previous&&previous!==dialog)previous.close();revealControls();if(!dialog.open)dialog.showModal();clearTimeout(idleTimer);}
   function closeSheet(dialog){
     if(dialog.dataset.closing==='true')return;
     if(reduced()||typeof dialog.animate!=='function'){dialog.close();return;}
@@ -285,9 +286,11 @@
   $('openSettings').addEventListener('click',settings);$('setupLocation').addEventListener('click',settings);$('cityButton').addEventListener('click',settings);$('permissionsHint').addEventListener('click',settings);
   $('displayMode').addEventListener('click',()=>{revealControls();far=!far;root.dataset.immersive=String(far);$('displayMode').setAttribute('aria-pressed',String(far));native.fullscreen(far);});
   $('openPrayers').addEventListener('click',()=>{renderPrayers();open($('prayersDialog'));});
-  $('fitPrayer').addEventListener('click',()=>command('fit'));
+  $('fitPrayer').addEventListener('click',()=>{if(command('fit'))$('prayersDialog').close();});
   $('soundToggle').addEventListener('click',sound);$('miniSound').addEventListener('click',sound);
   $('openAudio').addEventListener('click',()=>open($('audioDialog')));
+  $('clockAdjust').addEventListener('click',()=>open($('clockDialog')));
+  $('openJournal').addEventListener('click',()=>{window.SakinJournal.refresh();open($('journalDialog'));});
   $('openTask').addEventListener('click',()=>open($('taskDialog')));
   $('saveTask').addEventListener('click',()=>{if(save({task:$('task').value.trim()}))$('taskDialog').close();});
   document.querySelectorAll('[data-sound]').forEach(button=>button.addEventListener('click',()=>save({sound:button.dataset.sound})));

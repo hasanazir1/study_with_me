@@ -8,7 +8,7 @@
   <title>سَكَن • رفيق الدراسة</title>
   <link rel="preload" href="fonts/ReadexPro.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="app.css">
-  <link rel="stylesheet" href="room.css">
+  <link rel="stylesheet" href="room.css"><link rel="stylesheet" href="interior.css">
 </head>
 <body>
 <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -29,30 +29,12 @@
   <symbol id="icon-volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Zm12 0q3 3 0 6m3-9q6 6 0 12"/></symbol>
   <symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 6-7 11-7 11S5 16 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
 <symbol id="chevron" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol><symbol id="book" viewBox="0 0 24 24"><path d="M3 5q5-2 9 2 4-4 9-2v14q-5-2-9 2-4-4-9-2ZM12 7v14"/></symbol><symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h7m6 0h3M4 17h3m6 0h7"/><circle cx="14" cy="7" r="3"/><circle cx="10" cy="17" r="3"/></symbol></defs></svg>
-<div class="app">
-  <header class="topbar">
-    <div class="brand"><svg class="brand-mark"><use href="#leaf"/></svg><div><span class="brand-name">سَكَن</span><span class="brand-sub">مساحة صغيرة، وتركيز أعمق</span></div></div>
-    <div class="clock-area" aria-label="الوقت الآن"><div class="clock-line"><time id="clock" class="digits" dir="ltr">--:--</time><span id="ampm"></span></div><div id="date"></div><span id="clockZone" class="sr-only"></span></div>
-    <div class="header-actions"><button id="displayMode" class="icon-btn" aria-label="ملء الشاشة" aria-pressed="false"><svg><use href="#expand"/></svg></button><button id="openSettings" class="icon-btn" aria-label="الإعدادات"><svg><use href="#settings"/></svg></button></div>
-  </header>
-
-  <section class="prayer-strip" aria-label="الصلاة القادمة">
-    <div id="prayerEmpty"><button id="setupLocation" class="empty-prayer"><svg><use href="#sun"/></svg><span><strong>دراستك بين صلاتين</strong><small>اختَر مدينتك لنحسب الصلاة الجاية</small></span><svg class="chevron"><use href="#chevron"/></svg></button></div>
-    <div id="prayerContent" hidden>
-      <button id="openPrayers" class="prayer-pill" aria-label="الصلاة القادمة ومواقيت اليوم"><span class="prayer-icon"><svg><use id="prayerIcon" href="#sun"/></svg></span><span class="prayer-title"><span class="prayer-eyebrow">الصلاة الجاية</span><strong id="prayerName">—</strong><small><time id="prayerAt">--:--</time><span id="tomorrow"></span></small></span><span class="prayer-remaining"><small>باقي للأذان</small><span id="prayerCountdown" class="digits" dir="ltr">--:--:--</span></span></button>
-      <button id="cityButton" class="city-pill" aria-label="ضبط المدينة"><svg><use href="#pin"/></svg><span id="cityLabel"></span><svg class="chevron"><use href="#chevron"/></svg></button>
-    </div>
-    <p id="prayerError" class="error small" hidden></p>
-  </section>
-
-  <main class="desk" aria-label="مؤقّت الدراسة">
-    <div class="desk-top"><button id="openTask" class="task-preview" aria-label="تحديد هدف الجلسة"><svg><use href="#book"/></svg><span id="taskPreview">شو هدف جلستك؟</span></button><span id="roundLabel" class="round-label">جلسة جديدة</span></div>
-    <section id="roomPanel" class="room-panel" aria-label="غرفة الدراسة">
-      <div class="room-scene" aria-hidden="true"></div><div class="room-scene" aria-hidden="true"></div>
-      <button id="openRoom" class="room-picker" aria-label="اختيار أجواء الغرفة"><svg><use id="roomUse" href="#rain"/></svg><span id="roomName">مطر الشباك</span><svg><use href="#chevron"/></svg></button>
-      <span id="roomCaption" class="room-caption">قطرات وضوء ناعم</span>
-    </section>
-    <div class="timer-stage" id="timerStage">
+<main class="app studio" id="roomPanel" aria-label="غرفة سَكَن">
+ <div class="interior" aria-hidden="true"></div><div class="room-light" aria-hidden="true"></div><div class="window-air" aria-hidden="true"></div>
+ <button id="openRoom" class="window-tag prop" aria-label="تغيير أجواء الغرفة"><svg><use id="roomUse" href="#rain"/></svg><span id="roomName">مطر الشباك</span><span aria-hidden="true">⌄</span></button>
+ <section class="brass-clock prop" aria-label="ساعة الدراسة">
+  <div class="maker">ساعة الدراسة <svg aria-hidden="true"><use href="#leaf"/></svg> سَكَن</div>
+  <div class="clock-glass"><div class="live-clock"><time id="clock" dir="ltr"></time> <span id="ampm"></span><span id="clockZone" class="sr-only"></span></div><div class="timer-stage" id="timerStage">
       <div class="timer-orbit" id="timerOrbit">
         <svg class="timer-ring" viewBox="0 0 240 240" role="img" aria-label="تقدّم الجلسة"><circle class="ring-track" cx="120" cy="120" r="109"/><circle id="progressArc" class="ring-progress" cx="120" cy="120" r="109" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
         <div class="orbit-glow" aria-hidden="true"></div><div id="orbitMarker" class="orbit-marker" aria-hidden="true"><i></i></div><div class="timer-center"><span class="orbit-leaf" aria-hidden="true"><svg><use href="#leaf"/></svg></span><span id="phaseLabel" class="phase-label">وقت التركيز</span><div id="timer" class="timer digits" dir="ltr" role="timer" aria-label="الوقت المتبقي"><span>2</span><span>5</span><span class="colon">:</span><span>0</span><span>0</span></div><p id="timerHint">خطوة صغيرة، وتركيز أعمق</p><span id="sessionDuration" class="duration-caption">٢٥ دقيقة إلك</span></div>
@@ -60,15 +42,19 @@
       <div id="progress" class="sr-only" role="progressbar" aria-label="تقدّم الجلسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
       <div id="autoBreakBanner" class="auto-break-banner" hidden role="status"><span id="autoBreakText"></span><button id="cancelAutoBreak">إلغاء</button></div><p id="timerMessage" class="session-message" hidden aria-live="polite"></p>
     </div>
-    <div class="timer-actions quiet-controls"><button id="start" class="primary"><svg><use id="startIcon" href="#play"/></svg><span id="startLabel">ابدأ التركيز</span></button><button id="reset" class="secondary square" aria-label="إعادة ضبط المؤقّت"><svg><use href="#icon-reset"/></svg></button><button id="nextPhase" class="secondary">للراحة</button></div>
-    <div class="preset-area quiet-controls"><div class="presets" role="group" aria-label="دقائق الدراسة والراحة"><button data-focus="25" data-rest="5" aria-pressed="true"><span dir="ltr">25 / 5</span></button><button data-focus="50" data-rest="10" aria-pressed="false"><span dir="ltr">50 / 10</span></button><button data-focus="20" data-rest="15" aria-pressed="false"><span dir="ltr">20 / 15</span></button><button id="customTimer" aria-pressed="false"><svg><use href="#sliders"/></svg><span id="customTimerLabel">مخصّص</span></button></div><p id="presetHint" class="sr-only">دقائق دراسة / دقائق راحة</p></div>
-  </main>
-
-  <footer class="utility-bar quiet-controls"><div class="sound-pill"><button id="openAudio" class="sound-picker" aria-label="اختيار صوت الدراسة"><svg id="currentSoundIcon"><use id="currentSoundUse" href="#rain"/></svg><span id="currentSoundLabel">مطر هادئ</span><svg class="chevron"><use href="#chevron"/></svg></button><button id="soundToggle" class="sound-play" aria-label="تشغيل الصوت" aria-pressed="false"><svg><use id="soundIcon" href="#play"/></svg><span id="soundToggleLabel" class="sr-only">تشغيل</span></button></div><button id="fitPrayer" class="fit-prayer">جلسة قبل الصلاة</button></footer>
-  <button id="permissionsHint" class="sr-only" hidden>ضبط أذونات التنبيهات والتوقيت</button>
 </div>
-
-<dialog id="audioDialog" class="sheet audio-sheet" aria-labelledby="audioTitle">
+  <div class="clock-keys"><button id="start"><svg><use id="startIcon" href="#play"/></svg><span id="startLabel"></span></button><button id="clockAdjust" aria-label="ضبط المؤقّت"><svg><use href="#sliders"/></svg> ضبط</button></div>
+ </section>
+ <section class="almanac prop" aria-label="تقويم الصلاة"><i class="pin"></i><small>تقويم الصلاة</small>
+ <div id="prayerEmpty"><button id="setupLocation">اختَر مدينتك ‹</button></div><div id="prayerContent" hidden>
+ <button id="openPrayers"><strong id="prayerName"></strong> <time id="prayerAt"></time><span id="tomorrow"></span><small>باقي للأذان</small><b id="prayerCountdown" dir="ltr"></b></button>
+ <button id="cityButton"><svg><use id="prayerIcon" href="#pin"/></svg><span id="cityLabel"></span> ‹</button></div><p id="prayerError" hidden></p></section>
+ <div class="radio prop"><i class="speaker" aria-hidden="true"></i><button id="openAudio" aria-label="اختيار صوت الدراسة"><small>راديو سَكَن</small><span id="currentSoundLabel"></span></button><button id="soundToggle" aria-label="تشغيل الصوت"><svg id="currentSoundIcon" hidden><use id="currentSoundUse"/></svg><svg><use id="soundIcon" href="#play"/></svg><span id="soundToggleLabel" class="sr-only"></span></button></div>
+ <button class="journal prop" id="openJournal"><span class="foil">سَكَن ✦</span><strong>مفكّرتي</strong><span id="date"></span><small>فتح المواعيد ‹</small></button>
+ <div class="switchplate prop"><button id="openSettings" aria-label="الإعدادات"><svg><use href="#settings"/></svg></button><button id="displayMode" aria-label="ملء الشاشة" aria-pressed="false"><svg><use href="#expand"/></svg></button></div>
+ <button id="permissionsHint" class="sr-only" hidden>ضبط الأذونات</button>
+ </main><dialog id="clockDialog" class="sheet small-sheet" aria-labelledby="clockTitle"><div class="sheet-header"><h2 id="clockTitle">ضبط ساعة الدراسة</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div><div class="preset-area quiet-controls"><div class="presets" role="group" aria-label="دقائق الدراسة والراحة"><button data-focus="25" data-rest="5" aria-pressed="true"><span dir="ltr">25 / 5</span></button><button data-focus="50" data-rest="10" aria-pressed="false"><span dir="ltr">50 / 10</span></button><button data-focus="20" data-rest="15" aria-pressed="false"><span dir="ltr">20 / 15</span></button><button id="customTimer" aria-pressed="false"><svg><use href="#sliders"/></svg><span id="customTimerLabel">مخصّص</span></button></div><p id="presetHint" class="sr-only">دقائق دراسة / دقائق راحة</p></div>
+<div class="clock-options"><button id="reset" class="secondary">إعادة ضبط</button><button id="nextPhase" class="secondary"></button></div><p id="roundLabel"></p></dialog><dialog id="journalDialog" class="sheet small-sheet ledger" aria-labelledby="journalTitle"><div class="sheet-header"><h2 id="journalTitle">مفكّرتي</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div><button id="openTask" class="secondary full">هدف الجلسة · <span id="taskPreview"></span> ‹</button><form id="entryForm"><label>عنوان الموعد<input id="entryName" required maxlength="100" autocomplete="off"></label><label>اليوم والساعة<input id="entryWhen" type="datetime-local" required></label><button class="primary full">حفظ الموعد</button></form><p id="entryStatus" role="status"></p><ul id="entries"></ul></dialog><dialog id="audioDialog" class="sheet audio-sheet" aria-labelledby="audioTitle">
   <div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><div><span class="sheet-kicker">سكينة، على إيقاعك</span><h2 id="audioTitle">اختَر جوّك</h2></div><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
   <p id="soundStatus" class="muted small">كل الأصوات على جوالك</p>
   <div id="soundChoices" class="sound-choices" role="group" aria-label="اختر صوتًا"></div>
@@ -91,7 +77,7 @@
 <dialog id="prayersDialog" class="sheet small-sheet" aria-labelledby="prayersTitle">
   <div class="sheet-handle" aria-hidden="true"></div><div class="sheet-header"><h2 id="prayersTitle">مواقيت اليوم</h2><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></div>
   <p id="prayerDateLabel" class="muted small"></p>
-  <div id="prayerRows" class="prayer-rows"></div>
+  <button id="fitPrayer" class="secondary full">جلسة قبل الصلاة</button><div id="prayerRows" class="prayer-rows"></div>
   <p class="muted tiny">المواقيت محسوبة حسب موقعك والطريقة اللي اخترتها. قارنها بتقويم مسجدك أول مرة.</p>
 </dialog>
 
@@ -132,7 +118,7 @@
     <button id="allowExact" class="permission-row"><span>التوقيت الدقيق</span><span id="exactStatus"></span></button>
     <p class="muted tiny">اضغط كل إذن لتفعيله. بدون التوقيت الدقيق ممكن يتأخر التنبيه بالخلفية. بعض الجوالات تحتاج السماح للتطبيق بالعمل بالخلفية من إعدادات البطارية.</p>
   </section>
-  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٢ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.3.0 — MIT
+  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٣.١ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
 Copyright (c) 2016 Batoul Apps
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -242,11 +228,13 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   <div id="roomChoices" class="scene-choices" aria-label="أجواء الغرفة"></div>
   <p class="scene-note">تغيير الجو بصري فقط. الصوت بتختاره بشكل مستقل من زر الأصوات، وما بيتغيّر لحاله.</p>
   <button id="roomSound" class="primary" type="button" hidden>اختيار صوت مناسب</button>
-  <p class="scene-note section-gap">نسخة أولية للمشاهد. الشخصية وحركات الدراسة بالمرحلة القادمة.</p>
+
 </dialog>
 
 <div id="toast" class="toast" role="status" hidden></div>
+<script src="journal.js"></script>
 <script src="room.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
+

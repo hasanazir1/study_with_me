@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-The current milestone is the first phase-three room prototype, Android 1.3.0 / versionCode 5. The user requested a simple, working initial APK in about twenty minutes. Six lightweight SVG room moods are implemented, with independent audio and a native-persisted visualScene setting. See docs/PHASE3_TEST_AR.md. Await device feedback; do not start phase four (character) until requested. Read docs/AUDIO.md for the unchanged native audio engine.
+Current build: Android 1.3.1 / versionCode 6. Interact through the clock, almanac, journal, window and radio. See docs/STUDIO_TEST_AR.md.
 
 ## Product constraints
 

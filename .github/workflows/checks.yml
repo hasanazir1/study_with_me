@@ -39,4 +39,6 @@ jobs:
       - name: Verify offline audio assets and mix headroom
         run: python tests/check_audio.py
       - name: Check JavaScript syntax
-        run: node --check assets/app.js
+        run: |
+          node --check assets/app.js
+          node --check assets/room.js

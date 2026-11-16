@@ -38,7 +38,7 @@ The bridge exposes `getSnapshot`, `command`, `saveSettings`, `requestNotificatio
 
 The phase-two `SoundService` is a native media-playback foreground service with one AudioTrack stream. `PcmWave` lazily reads the bundled PCM16 stereo loops off the main thread. `PcmMixer` mixes/fades/wraps the source arrays on a continuous sample clock; MediaSession, audio focus and a partial CPU wake lock are service-owned. A sound-only monotonic sleep deadline pauses playback. See AUDIO.md for files, sources, licensing and device-test limits.
 
-`assets/scenes.json` is the shared audio-preset configuration, with future visual/character fields reserved for later phases. No visual scene engine or character is implemented yet. UI commands `audioSleep` and `previewChime` control sleep and the native cue preview.
+`assets/scenes.json` remains the shared native audio-preset configuration. Phase three adds `room.js` and `room.css`: an original SVG room with six visual configurations, each containing colors, effect, optional existing audio-preset reference and a future character state. Two reused SVG layers crossfade; CSS handles motion. Hidden and inactive layers pause; reduced motion disables effects. Visual selection is native-persisted as `visualScene`, independently from sound. No character is implemented yet. UI commands `audioSleep` and `previewChime` control sleep and the native cue preview.
 
 `Alarms` schedules local timer/prayer events. Exact-alarm access and notification access are separate. Without exact-alarm permission the fallback can be delayed; force-stop and device-specific battery restrictions remain relevant. No cloud push service is involved.
 

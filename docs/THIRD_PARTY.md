@@ -9,3 +9,7 @@
 | Leaf/icon/UI graphics | `assets/index.html`, `res/drawable/` | Code-native project graphics |
 
 A project-wide license for the original application code has not been selected. Keep the existing third-party notices with redistributed components. Choose a project license with the owner before adding one.
+
+## Phase-three artwork
+
+The room SVG, scene animation and palettes in assets/room.js and assets/room.css are original project code. No external image, game asset, runtime or new audio recording was added.

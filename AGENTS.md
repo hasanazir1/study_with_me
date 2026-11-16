@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-The current app milestone is phase two, Android 1.2.1 / versionCode 4. The user requested improved audio/motion, an audible completion cue and automatic rest after five seconds. Phase two is implemented and awaiting device feedback. Do not start phase three (visual scenes) until requested. Read docs/AUDIO.md for the native PCM engine and source licenses.
+The current milestone is the first phase-three room prototype, Android 1.3.0 / versionCode 5. The user requested a simple, working initial APK in about twenty minutes. Six lightweight SVG room moods are implemented, with independent audio and a native-persisted visualScene setting. See docs/PHASE3_TEST_AR.md. Await device feedback; do not start phase four (character) until requested. Read docs/AUDIO.md for the unchanged native audio engine.
 
 ## Product constraints
 

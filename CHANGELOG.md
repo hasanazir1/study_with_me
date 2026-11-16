@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0 — 2026-11-16 (versionCode 5, phase-three prototype)
+
+- Added an original offline SVG study room with rain, nature, fireplace, café, night and quiet visual moods.
+- Two reusable layers crossfade; only the active room animates. Hidden pages pause; reduced-motion and light-effects settings disable movement and flashes.
+- Added a native-persisted visual choice and a room sheet. Audio remains independent, with an optional existing sound suggestion; no new café/fire recordings or character in this prototype.
+- Adapted the main screen through 320×568 portrait, 568×320 and 784×388 landscape, phone and desktop previews. Timer, prayers and all prior controls remain.
+- APK uses the original signing certificate and package. Native/device behavior has not been tested on a physical Android or emulator here.
+
 ## 1.2.1 — Phase-two final build — 2026-11-16
 
 - Removed per-sample ArrayList iterator creation in the continuous audio mixer; indexed loops avoid temporary allocations in render().

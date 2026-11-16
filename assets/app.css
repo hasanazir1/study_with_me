@@ -21,3 +21,33 @@ button,input,select,textarea{font:inherit}button{color:inherit;border:0;cursor:p
 :root[data-effects=light] .room{opacity:.35}:root[data-effects=light] .desk{backdrop-filter:none;-webkit-backdrop-filter:none}:root[data-effects=light] .digit-shift{animation:none}:root[data-visible=false] *, :root[data-visible=false] *:before{animation-play-state:paused!important}
 ::view-transition-old(root){animation:room-out .18s ease both}::view-transition-new(root){animation:room-in .26s ease both}@keyframes room-out{to{opacity:0;transform:translateY(-3px)}}@keyframes room-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}button:active:not(:disabled){transform:none}::view-transition-old(root),::view-transition-new(root){animation:none!important}.room{opacity:.3}}
+/* Phase two: compositor-only motion and a calmer, lighter timer surface. */
+.desk{backdrop-filter:none;-webkit-backdrop-filter:none;position:relative;background:var(--glass)}
+.timer-orbit{contain:layout style}.timer>span{position:relative;height:1.18em;overflow:hidden}.digit-old{position:absolute;inset:0;font-style:normal;pointer-events:none}
+.orbit-glow{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,rgba(168,195,160,.13),transparent 72%);opacity:.5;pointer-events:none;z-index:-1}
+:root[data-running=true] .orbit-glow{animation:orbit-breath 6s cubic-bezier(.4,0,.6,1) infinite}
+:root[data-phase=break] .orbit-glow{background:radial-gradient(circle,rgba(242,217,192,.24),transparent 72%)}
+.orbit-marker{position:absolute;inset:4.6%;border-radius:50%;pointer-events:none;opacity:0;will-change:transform}.orbit-marker i{position:absolute;top:-3px;left:calc(50% - 3px);width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 0 5px var(--soft)}
+:root[data-running=true] .orbit-marker{opacity:1}.orbit-leaf{background:transparent}
+:root[data-running=true] .orbit-leaf svg{animation:leaf-breathe 6s ease-in-out infinite}
+:root[data-audio-playing=true] #currentSoundIcon{animation:sound-breathe 3s ease-in-out infinite}
+.sheet::backdrop{backdrop-filter:none}.sheet[open]{animation:sheet-arrive .45s cubic-bezier(.2,.75,.2,1) both}
+.sheet label.layer-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(70px,1.4fr) 34px;gap:10px;align-items:center;margin-top:10px;font-size:11px}
+.layer-row input{width:100%;accent-color:var(--sage);direction:ltr;height:36px}.layer-row output{direction:ltr;text-align:left;color:var(--muted);font-size:10px}
+.audio-mix{margin-top:19px;padding:16px;border-radius:24px;background:var(--soft)}.mix-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}.audio-badge{font-size:8px;color:var(--muted);white-space:nowrap}
+.sound-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.sound-choices button{min-height:78px;font-size:10px;gap:6px;border-radius:20px;padding:10px 6px;position:relative}
+.sound-choices button[aria-pressed=true]:after{content:'';position:absolute;top:8px;left:8px;width:5px;height:5px;background:#839C79;border-radius:50%}
+.sound-choices button:last-child{grid-column:span 2;flex-direction:row;gap:9px}.sound-choices svg{width:23px;height:23px}
+.sheet label.master-volume{gap:8px}.master-volume>span{font-size:10px;white-space:nowrap}.master-volume input{width:50px}
+.sheet label.sleep-row{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.sheet .sleep-row select{width:auto;min-height:40px;font-size:12px;padding:7px 12px}.sleep-row>span{white-space:nowrap;font-size:11px}
+#audioSleepStatus{min-height:16px;margin-top:5px}.audio-credits{margin-top:12px}.audio-credits p{line-height:1.9}.section-gap{margin-top:25px}
+.auto-break-banner{position:absolute;bottom:4px;left:2px;right:2px;z-index:3;display:flex;justify-content:center;align-items:center;gap:8px;background:var(--sheet);box-shadow:var(--shadow);border-radius:18px;padding:6px;font-size:10px;color:var(--sand-text)}.auto-break-banner button{border-radius:99px;padding:5px 10px;background:var(--soft);font-size:10px;min-height:32px}
+:root[data-waiting=true] #timerHint{opacity:0}:root[data-waiting=true] .quiet-controls{opacity:1;transform:none}
+@keyframes orbit-breath{0%,100%{transform:scale(.94);opacity:.5}50%{transform:scale(1.08);opacity:1}}
+@keyframes leaf-breathe{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(-2px)}}
+@keyframes sound-breathe{0%,100%{transform:scale(.94);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+@keyframes sheet-arrive{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+:root[data-effects=light] .orbit-glow,:root[data-effects=light] .orbit-leaf svg,:root[data-effects=light] #currentSoundIcon{animation:none!important}
+:root[data-effects=light] .orbit-marker{display:none}:root[data-visible=false] *, :root[data-visible=false] *:after{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.orbit-marker{display:none}.orbit-glow,.orbit-leaf svg,#currentSoundIcon{animation:none!important}}
+@media(min-width:700px) and (max-height:500px){.audio-sheet{max-width:640px}.audio-sheet .sound-choices{grid-template-columns:repeat(5,minmax(0,1fr))}.audio-sheet .sound-choices button:last-child{grid-column:auto;flex-direction:column}}

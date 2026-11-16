@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-The current app milestone is phase one, Android 1.1.0 / versionCode 2. Phase two has **not** started. Wait for an explicit user request to proceed to a later phase; repository setup is not approval to start it.
+The current app milestone is phase two, Android 1.2.0 / versionCode 3. The user requested improved audio/motion, an audible completion cue and automatic rest after five seconds. Phase two is implemented and awaiting device feedback. Do not start phase three (visual scenes) until requested. Read docs/AUDIO.md for the native PCM engine and source licenses.
 
 ## Product constraints
 
@@ -42,6 +42,7 @@ The current app milestone is phase one, Android 1.1.0 / versionCode 2. Phase two
 ```text
 python tests/run_tests.py
 python tests/check_ui.py
+python tests/check_audio.py
 node --check assets/app.js
 ```
 

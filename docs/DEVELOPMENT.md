@@ -8,7 +8,7 @@ cd study_with_me
 git status
 ```
 
-Read `AGENTS.md` and `docs/PROGRESS.md` before a change. The latest milestone is phase one; future phases need the user's request to proceed.
+Read `AGENTS.md` and `docs/PROGRESS.md` before a change. The latest milestone is phase two (1.2.0 / code 3), awaiting device feedback; future phases need the user's request to proceed.
 
 ## Requirements
 
@@ -17,7 +17,7 @@ Read `AGENTS.md` and `docs/PROGRESS.md` before a change. The latest milestone is
 - Node.js 22+ for JavaScript syntax checks; there are no npm dependencies.
 - For APK builds: official Android SDK Platform 35 and Build Tools 35.0.0. Set `ANDROID_SDK_ROOT` / `ANDROID_HOME`, or pass `--sdk`.
 - The owner's original private keystore for official signed updates. It is deliberately not in this repository.
-- NumPy only if regenerating the procedural audio. Existing loops are already bundled.
+- NumPy, SciPy and ffmpeg only if regenerating/preparing audio. Existing loops are already bundled; see `docs/AUDIO.md` for precise sources and filenames.
 
 The current build uses SDK tools directly. It is not an Android Studio/Gradle project; do not silently migrate the build system as part of unrelated work.
 
@@ -26,10 +26,21 @@ The current build uses SDK tools directly. It is not an Android Studio/Gradle pr
 ```text
 python tests/run_tests.py
 python tests/check_ui.py
+python tests/check_audio.py
 node --check assets/app.js
 ```
 
 On Windows, if a suitable JDK is not on PATH, set `JAVA_HOME` to its installation directory. On Linux/macOS the executable suffix is selected automatically. GitHub Actions runs these checks on Ubuntu without a signing key.
+
+Optional browser UI checks use Playwright and a local mock bridge, not Android APIs:
+
+```text
+npm install --no-save --package-lock=false playwright
+npx playwright install chromium
+node tests/browser_ui.cjs
+```
+
+`PLAYWRIGHT_MODULE` and `CHROMIUM_EXECUTABLE` can select an existing installation; `SAKIN_SCREENSHOTS` optionally selects a screenshot directory. The test owns and stops its local preview server/browser. For manual preview run `python tests/preview_server.py` after the Java tests generate the prayer fixture. No preview code is packaged into APK.
 
 ## Build an official APK
 

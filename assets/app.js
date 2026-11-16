@@ -4,6 +4,7 @@
   const root = document.documentElement;
   const native = window.Sakin;
   if (!native) { document.body.textContent = 'افتح سَكَن من تطبيق أندرويد.'; return; }
+  const audioCatalog=JSON.parse(native.getAudioCatalog());
   const cities = [
     ['hebron','الخليل',31.5326,35.0998,'Asia/Hebron','MUSLIM_WORLD_LEAGUE'],
     ['gaza','غزة',31.5017,34.4668,'Asia/Gaza','MUSLIM_WORLD_LEAGUE'],
@@ -37,7 +38,8 @@
   const prayerIds = ['fajr','dhuhr','asr','maghrib','isha'];
   const prayerNames = ['الفجر','الظهر','العصر','المغرب','العشاء'];
   let snapshot, far=false, toastTimer, lastState='', lastAudioError='', soundBusy=false, locating=false, locationBefore='';
-  let refreshTimer, idleTimer, orbitObserver, swallowWakeClick=false;
+  let refreshTimer, idleTimer, orbitObserver;
+  let motionFrame=0, motionAt=0, sampledAt=0, audioPreset='', presentationAnimation;
   const systemMotion=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
   const reduced=()=>Boolean((systemMotion&&systemMotion.matches)||(snapshot&&snapshot.settings.lightEffects));
   function revealControls(){
@@ -48,14 +50,17 @@
     const timer=$('timer');
     if(timer.childElementCount!==value.length){
       timer.textContent='';
-      for(const char of value){const span=document.createElement('span');span.textContent=char;if(char===':')span.className='colon';timer.appendChild(span);}
+      for(const char of value){const span=document.createElement('span');span.textContent=char;span.dataset.digit=char;if(char===':')span.className='colon';timer.appendChild(span);}
       return;
     }
     Array.from(timer.children).forEach((span,index)=>{
-      if(span.textContent===value[index])return;
+      if(span.dataset.digit===value[index])return;
+      const previous=span.dataset.digit;span.dataset.digit=value[index];
       span.textContent=value[index];
-      if(!reduced()&&!document.hidden&&value[index]!==':'){
-        if(typeof span.animate==='function')span.animate([{opacity:.25,transform:'translateY(10%)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'ease-out'});
+      if(!reduced()&&!document.hidden&&value[index]!==':'&&typeof span.animate==='function'){
+        const old=document.createElement('i');old.className='digit-old';old.setAttribute('aria-hidden','true');old.textContent=previous;span.append(old);
+        old.animate([{transform:'translateY(0)',opacity:.7},{transform:'translateY(-65%)',opacity:0}],{duration:380,easing:'cubic-bezier(.2,.7,.2,1)'}).onfinish=()=>old.remove();
+        span.animate([{transform:'translateY(13%)',opacity:.55},{transform:'translateY(0)',opacity:1}],{duration:420,easing:'cubic-bezier(.2,.7,.2,1)'});
       }
     });
   }
@@ -71,12 +76,25 @@
     refresh();refreshTimer=setTimeout(refreshLoop,1000-(Date.now()%1000));
   }
   function presentationChange(){
-    const update=()=>{refresh();sizeOrbit();};
-    if(typeof document.startViewTransition==='function'&&!reduced()&&!document.hidden){
-      try{const transition=document.startViewTransition(update);transition.ready.catch(()=>{});transition.finished.catch(()=>{});return;}catch(e){ }
+    refresh();sizeOrbit();
+    if(!reduced()&&!document.hidden&&typeof document.querySelector('.app').animate==='function'){
+      if(presentationAnimation)presentationAnimation.cancel();
+      presentationAnimation=document.querySelector('.app').animate([{opacity:.65,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:450,easing:'cubic-bezier(.2,.7,.2,1)'});
     }
-    update();
   }
+  function motion(now){
+    motionFrame=0;if(document.hidden||!snapshot)return;
+    const t=snapshot.timer;
+    if(now-motionAt>32){
+      motionAt=now;
+      const remaining=t.status==='running'?Math.max(0,t.remainingMs-(now-sampledAt)):t.remainingMs;
+      renderDigits(countdown(remaining));
+      const progress=Math.max(0,Math.min(1,1-remaining/t.durationMs));
+      $('orbitMarker').style.transform='rotate('+(progress*360)+'deg)';
+    }
+    if(t.status==='running'&&!reduced())motionFrame=requestAnimationFrame(motion);
+  }
+  function startMotion(){if(!motionFrame&&!document.hidden&&snapshot.timer.status==='running'&&!reduced())motionFrame=requestAnimationFrame(motion);}
   const locationKey=s=>[s.configured,s.gps,s.latitude,s.longitude].join('|');
   function requestLocation(){locating=true;locationBefore=locationKey(snapshot.settings);native.requestLocation();}
   const arabic = number => Number(number).toLocaleString('ar');
@@ -114,6 +132,8 @@
     root.dataset.running=String(t.status==='running');
     root.dataset.effects=reduced()?'light':'full';
     root.dataset.visible=String(!document.hidden);
+    root.dataset.audioPlaying=String(snapshot.soundPlaying);
+    root.dataset.waiting=String(Boolean(t.autoBreakRemainingMs));
     if(snapshot.presentation){far=Boolean(snapshot.presentation.immersive);root.dataset.immersive=String(far);$('displayMode').setAttribute('aria-pressed',String(far));$('displayMode').setAttribute('aria-label',far?'الخروج من ملء الشاشة':'ملء الشاشة');}
     const clock=timeParts(snapshot.now);
     $('clock').textContent=clock.digits;$('ampm').textContent=clock.period;
@@ -124,14 +144,17 @@
     $('phaseLabel').textContent=t.phase==='focus'?'وقت التركيز':'وقت تستريح';
     $('roundLabel').textContent=t.phase==='focus'?'جلسة '+arabic(snapshot.todayRounds+1):'استراحة تستاهلها';
     $('timerHint').textContent=t.status==='finished'?(t.phase==='focus'?'أحسنت. خذ راحتك، وبعدين كمّل.':'نَفَس جديد، وجلسة جديدة'):t.status==='paused'?'جلستك محفوظة، كمّل على راحتك':t.phase==='break'?'ارفع عيونك عن الشاشة وخذ نَفَس':'خطوة صغيرة، وتركيز أعمق';
+    $('autoBreakBanner').hidden=!t.autoBreakRemainingMs;
+    $('autoBreakText').textContent=t.autoBreakRemainingMs?'راحتك تبدأ بعد '+arabic(Math.ceil(t.autoBreakRemainingMs/1000))+' ثوانٍ':'';
     $('startIcon').setAttribute('href',t.status==='running'?'#pause':'#play');
     $('startLabel').textContent=t.status==='running'?'إيقاف مؤقّت':t.status==='paused'?'كمّل الجلسة':t.status==='finished'?(t.phase==='focus'?'ابدأ الراحة':'ابدأ التركيز'):t.phase==='focus'?'ابدأ التركيز':'ابدأ الراحة';
     $('nextPhase').textContent=t.phase==='focus'?'للراحة':'للدراسة';
     const progress=Math.max(0,Math.min(100,100*(1-t.remainingMs/t.durationMs)));
     $('progressArc').style.strokeDashoffset=String(100-progress);$('progress').setAttribute('aria-valuenow',String(Math.round(progress)));
+    $('orbitMarker').style.transform='rotate('+(progress*3.6)+'deg)';
     $('sessionDuration').textContent=arabic(Math.round(t.durationMs/60000))+' دقيقة '+(t.phase==='focus'?'إلك':'راحة');
     $('timerMessage').hidden=!t.message;$('timerMessage').textContent=t.message||'';
-    const active=t.status==='running'||t.status==='paused';
+    const active=t.status==='running'||t.status==='paused'||Boolean(t.autoBreakRemainingMs);
     document.querySelectorAll('.presets button').forEach(button=>{button.disabled=active;if(button.dataset.focus)button.setAttribute('aria-pressed',String(Number(button.dataset.focus)===t.focusMinutes&&Number(button.dataset.rest)===t.breakMinutes));});
     const standard=[[25,5],[50,10],[20,15]].some(p=>p[0]===t.focusMinutes&&p[1]===t.breakMinutes);
     $('customTimer').setAttribute('aria-pressed',String(!standard));
@@ -157,14 +180,18 @@
     $('soundIcon').setAttribute('href',playing?'#pause':'#play');
     $('soundToggleLabel').textContent=playing?'إيقاف':'تشغيل';$('soundToggle').setAttribute('aria-label',playing?'إيقاف الصوت':'تشغيل الصوت');
     $('miniSoundLabel').textContent=playing?'إيقاف الصوت':'تشغيل الصوت';$('miniSoundIcon').setAttribute('href',playing?'#pause':'#play');
-    $('soundStatus').textContent=playing?'الصوت شغّال • محفوظ على جوالك':'الأصوات محفوظة على جوالك';
-    const soundNames={rain:'مطر هادئ',ocean:'أمواج البحر',stream:'خرير مياه',brown:'ضجيج بني'};
-    const soundIcons={rain:'#rain',ocean:'#waves',stream:'#water',brown:'#noise'};
-    $('currentSoundLabel').textContent=soundNames[s.sound]||soundNames.rain;
-    $('currentSoundUse').setAttribute('href',soundIcons[s.sound]||'#rain');
+    $('soundStatus').textContent=snapshot.soundLoading?'نجهّز جوّك…':playing?'شغّال، حتى لو سكّرت الشاشة':'كل الأصوات على جوالك، بدون إنترنت';
+    const preset=audioCatalog.find(p=>p.id===s.sound)||audioCatalog[0];
+    $('currentSoundLabel').textContent=preset.name;
+    $('currentSoundUse').setAttribute('href','#'+preset.icon);
+    $('soundToggle').disabled=s.sound==='silence';$('miniSound').disabled=s.sound==='silence';
+    renderLayers(preset);
     document.querySelectorAll('[data-sound]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.sound===s.sound)));
     if(document.activeElement!==$('volume'))$('volume').value=s.volume;
     $('volumeValue').textContent=s.volume+'%';
+    $('audioSleep').disabled=!playing;
+    if(!snapshot.sleepRemainingMs)$('audioSleep').value='0';
+    $('audioSleepStatus').textContent=snapshot.sleepRemainingMs?'الصوت يتوقّف بعد '+arabic(Math.ceil(snapshot.sleepRemainingMs/60000))+' دقيقة':'';
     $('todayStudy').textContent=studyText(snapshot.todayMs);$('todayRounds').textContent=arabic(snapshot.todayRounds)+' جلسات مكتملة';
     $('permissionsHint').hidden=snapshot.exactAlarms&&snapshot.notifications;
     $('notificationsStatus').textContent=snapshot.notifications?'مفعّل ✓':'اضغط للتفعيل';
@@ -176,12 +203,38 @@
     lastState=t.status;
     if(locating&&s.configured&&locationKey(s)!==locationBefore){locating=false;populateSettings();}
   }
-  function refresh(){try{const value=JSON.parse(native.getSnapshot());if(!value.timer||!value.settings)return;snapshot=value;render();}catch(e){console.error('Snapshot unavailable',e);}}
+  function refresh(){try{const value=JSON.parse(native.getSnapshot());if(!value.timer||!value.settings)return;snapshot=value;sampledAt=performance.now();render();startMotion();}catch(e){console.error('Snapshot unavailable',e);}}
+  function renderLayers(preset){
+    if(audioPreset!==preset.id){
+      audioPreset=preset.id;$('audioLayers').textContent='';$('soundDescription').textContent=preset.description;
+      preset.layers.forEach((layer,index)=>{
+        const label=document.createElement('label');label.className='layer-row';const title=document.createElement('span');title.textContent=layer.name;
+        const input=document.createElement('input');input.type='range';input.min=0;input.max=100;input.dataset.layer=preset.id+'_'+index;input.setAttribute('aria-label',layer.name);
+        const output=document.createElement('output');
+        input.addEventListener('input',()=>{output.textContent=input.value+'%';});
+        input.addEventListener('change',()=>save({layerVolumes:{...snapshot.settings.layerVolumes,[input.dataset.layer]:Number(input.value)}}));
+        label.append(title,input,output);$('audioLayers').append(label);
+      });
+    }
+    $('audioLayers').querySelectorAll('input').forEach((input,index)=>{
+      const value=(snapshot.settings.layerVolumes||{})[input.dataset.layer]??preset.layers[index].volume;
+      if(document.activeElement!==input)input.value=value;
+      input.nextElementSibling.textContent=input.value+'%';
+    });
+  }
   function open(dialog){revealControls();if(!dialog.open)dialog.showModal();clearTimeout(idleTimer);}
+  function closeSheet(dialog){
+    if(dialog.dataset.closing==='true')return;
+    if(reduced()||typeof dialog.animate!=='function'){dialog.close();return;}
+    dialog.dataset.closing='true';
+    const animation=dialog.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(25px)'}],{duration:180,easing:'ease-in'});
+    animation.onfinish=()=>{dialog.close();delete dialog.dataset.closing;};
+    animation.oncancel=()=>{dialog.close();delete dialog.dataset.closing;};
+  }
   function populateSettings(){
     const s=snapshot.settings;
     ['method','theme','fajrAngle','ishaAngle'].forEach(key=>$(key).value=s[key]);
-    ['hanafi','pauseAtPrayer','prayerAlerts','prePrayer','keepScreen','stopSoundWithTimer','autoImmersive','haptics','lightEffects'].forEach(key=>$(key).checked=Boolean(s[key]));
+    ['hanafi','pauseAtPrayer','prayerAlerts','prePrayer','keepScreen','stopSoundWithTimer','autoImmersive','haptics','lightEffects','autoBreak','completionSound'].forEach(key=>$(key).checked=Boolean(s[key]));
     const found=cities.find(city=>city[2]===s.latitude&&city[3]===s.longitude);
     $('citySelect').value=!s.configured?'':s.gps?'gps':found?found[0]:'manual';
     $('manualLocation').hidden=$('citySelect').value!=='manual';
@@ -206,6 +259,14 @@
     });
   }
   function sound(){if(soundBusy)return;soundBusy=true;command('sound');setTimeout(()=>{soundBusy=false;refresh();},650);}
+  audioCatalog.forEach(preset=>{
+    const button=document.createElement('button');button.dataset.sound=preset.id;button.setAttribute('aria-pressed','false');
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),use=document.createElementNS(svg.namespaceURI,'use');use.setAttribute('href','#'+preset.icon);svg.append(use);
+    const title=document.createElement('span');title.textContent=preset.name;button.append(svg,title);$('soundChoices').append(button);
+  });
+  $('cancelAutoBreak').addEventListener('click',()=>command('cancelAutoBreak'));
+  $('previewChime').addEventListener('click',()=>command('previewChime'));
+  $('audioSleep').addEventListener('change',()=>command('audioSleep',{minutes:Number($('audioSleep').value)}));
   for(const city of cities){const option=document.createElement('option');option.value=city[0];option.textContent=city[1];$('citySelect').append(option);}
   for(const [value,text]of [['gps','موقعي الحالي'],['manual','مدينة ثانية / إحداثيات']]){const option=document.createElement('option');option.value=value;option.textContent=text;$('citySelect').append(option);}
   prayerIds.forEach((id,index)=>{
@@ -228,7 +289,7 @@
   $('openAudio').addEventListener('click',()=>open($('audioDialog')));
   $('openTask').addEventListener('click',()=>open($('taskDialog')));
   $('saveTask').addEventListener('click',()=>{if(save({task:$('task').value.trim()}))$('taskDialog').close();});
-  document.querySelectorAll('[data-sound]').forEach(button=>button.addEventListener('click',()=>{const playing=snapshot.soundPlaying;if(save({sound:button.dataset.sound})&&playing)command('playSound');}));
+  document.querySelectorAll('[data-sound]').forEach(button=>button.addEventListener('click',()=>save({sound:button.dataset.sound})));
   $('volume').addEventListener('input',()=>{$('volumeValue').textContent=$('volume').value+'%';});
   $('volume').addEventListener('change',()=>save({volume:Number($('volume').value)}));
   $('citySelect').addEventListener('change',()=>{
@@ -246,16 +307,15 @@
   });
   ['method','theme'].forEach(key=>$(key).addEventListener('change',()=>{save({[key]:$(key).value});if(key==='method')$('customAngles').hidden=$('method').value!=='CUSTOM';}));
   ['fajrAngle','ishaAngle'].forEach(key=>$(key).addEventListener('change',()=>{if($(key).checkValidity())save({[key]:Number($(key).value)});else $(key).reportValidity();}));
-  ['hanafi','pauseAtPrayer','prayerAlerts','prePrayer','keepScreen','stopSoundWithTimer','autoImmersive','haptics','lightEffects'].forEach(key=>$(key).addEventListener('change',()=>{const checked=$(key).checked;if(save({[key]:checked})&&key==='prayerAlerts'&&checked&&!snapshot.notifications)native.requestNotifications();}));
+  ['hanafi','pauseAtPrayer','prayerAlerts','prePrayer','keepScreen','stopSoundWithTimer','autoImmersive','haptics','lightEffects','autoBreak','completionSound'].forEach(key=>$(key).addEventListener('change',()=>{const checked=$(key).checked;if(save({[key]:checked})&&key==='prayerAlerts'&&checked&&!snapshot.notifications)native.requestNotifications();}));
   $('allowNotifications').addEventListener('click',()=>native.requestNotifications());$('allowExact').addEventListener('click',()=>native.requestExactAlarms());
-  document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
-  document.querySelectorAll('dialog').forEach(dialog=>{dialog.addEventListener('close',revealControls);dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});});
-  window.sakinBack=()=>{const openDialog=document.querySelector('dialog[open]');if(openDialog){openDialog.close();return true;}if(far){$('displayMode').click();return true;}return false;};
+  document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeSheet(button.closest('dialog'))));
+  document.querySelectorAll('dialog').forEach(dialog=>{dialog.addEventListener('cancel',event=>{event.preventDefault();closeSheet(dialog);});dialog.addEventListener('close',revealControls);dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeSheet(dialog);}});});
+  window.sakinBack=()=>{const openDialog=document.querySelector('dialog[open]');if(openDialog){closeSheet(openDialog);return true;}if(far){$('displayMode').click();return true;}return false;};
   window.sakinNativePresentation=presentationChange;
-  document.addEventListener('pointerdown',event=>{const sleeping=root.dataset.idle==='true';revealControls();swallowWakeClick=Boolean(sleeping&&event.target.closest('.quiet-controls'));},true);
-  document.addEventListener('click',event=>{if(swallowWakeClick){swallowWakeClick=false;event.preventDefault();event.stopImmediatePropagation();}},true);
-  document.addEventListener('keydown',()=>{swallowWakeClick=false;revealControls();},true);
-  document.addEventListener('visibilitychange',()=>{root.dataset.visible=String(!document.hidden);clearTimeout(refreshTimer);clearTimeout(idleTimer);if(document.hidden){if(typeof document.getAnimations==='function')document.getAnimations().forEach(animation=>animation.cancel());}else{refreshLoop();revealControls();sizeOrbit();}});
+  document.addEventListener('pointerdown',revealControls,true);
+  document.addEventListener('keydown',revealControls,true);
+  document.addEventListener('visibilitychange',()=>{root.dataset.visible=String(!document.hidden);clearTimeout(refreshTimer);clearTimeout(idleTimer);cancelAnimationFrame(motionFrame);motionFrame=0;if(document.hidden){if(typeof document.getAnimations==='function')document.getAnimations().forEach(animation=>animation.cancel());}else{refreshLoop();revealControls();sizeOrbit();}});
   window.addEventListener('resize',sizeOrbit);
   if(typeof ResizeObserver==='function'){orbitObserver=new ResizeObserver(sizeOrbit);orbitObserver.observe($('timerStage'));}
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sizeOrbit);

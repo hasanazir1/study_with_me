@@ -12,7 +12,12 @@ parser.add_argument('--keystore',type=Path,default=Path(os.environ.get('SAKIN_KE
 args=parser.parse_args()
 SDK=args.sdk.resolve();JAVA=find_jdk_home(args.java)/'bin';BT=SDK/'build-tools/35.0.0';PLATFORM=SDK/'platforms/android-35/android.jar'
 BUILD=ROOT/'build';BUILD.mkdir(exist_ok=True)
-for directory in ['generated','classes','dex','tests']:(BUILD/directory).mkdir(exist_ok=True)
+for directory in ['generated','classes','dex']:
+    target=(BUILD/directory).resolve()
+    if target.parent!=BUILD.resolve() or (BUILD/directory).is_symlink():
+        raise RuntimeError('Refused to clean a generated directory outside build/')
+    if target.exists():shutil.rmtree(target)
+    target.mkdir()
 def run(*cmd):
     subprocess.run([str(s) for s in cmd],check=True,cwd=ROOT)
 def java_tool(name):return JAVA/(name+('.exe' if os.name=='nt' else ''))

@@ -1,0 +1,25 @@
+Sakin 1.2 audio credits
+
+rain.wav: Soft rain.WAV by barkenov
+https://freesound.org/people/barkenov/sounds/640655/
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+Processed: filtered, gentle gain riding, normalized and crossfaded to a 60s stereo PCM loop.
+
+window.wav: rain against window 2 by bastipictures
+https://freesound.org/people/bastipictures/sounds/243781/
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+Processed: filtered, gentle gain riding, normalized and crossfaded to a 60s stereo PCM loop.
+
+ocean.wav: Gentle Ocean Waves Mix (2018) by esh9419; includes subtyrant and indieground
+https://freesound.org/people/esh9419/sounds/417797/
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+Processed: filtered, gentle gain riding, normalized and crossfaded to a 60s stereo PCM loop.
+
+stream.wav: River Stream by Fabrizio84
+https://freesound.org/people/Fabrizio84/sounds/457960/
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+Processed: filtered, gentle gain riding, normalized and crossfaded to a 60s stereo PCM loop.
+
+wind.wav, brown.wav, bubbles.wav and res/raw/session_end.wav: original procedural audio created for Sakin with tools/prepare_audio.py; no third-party recordings in these four assets.
+
+The downloads include lossy MP3 versions/previews. Converting to PCM does not restore lost detail or make these original lossless recordings. See sources.json for exact download URLs and hashes. All playback is offline.

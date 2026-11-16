@@ -36,5 +36,7 @@ jobs:
         run: python tests/run_tests.py
       - name: Check interface wiring
         run: python tests/check_ui.py
+      - name: Verify offline audio assets and mix headroom
+        run: python tests/check_audio.py
       - name: Check JavaScript syntax
         run: node --check assets/app.js

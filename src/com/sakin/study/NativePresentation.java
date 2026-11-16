@@ -51,7 +51,7 @@ public final class NativePresentation {
     public void sync(){
         TimerCore timer=AppStore.loadTimer(activity);
         JSONObject settings=AppStore.settings(activity);
-        boolean nextRunning=timer.running();
+        boolean nextRunning=timer.running()||timer.waitingForBreak();
         if(nextRunning&&!running&&settings.optBoolean("autoImmersive",true))enter(true);
         else if(!nextRunning&&running)exit();
         if(orientationLocked&&!settings.optBoolean("autoImmersive",true))exit();

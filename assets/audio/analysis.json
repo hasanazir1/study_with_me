@@ -1,0 +1,65 @@
+{
+  "rain": {
+    "source": "CC0 recording",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -1.85,
+    "sha256": "de84d856e1cdd5c2d62b01d7a08ef32a683b2018751059ddcbb11583d28fe082"
+  },
+  "window": {
+    "source": "CC0 recording",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -2.14,
+    "sha256": "4363b51b672588093f9a9b14cb3625eeeda7eda141ca97728d2caf67422eaf53"
+  },
+  "ocean": {
+    "source": "CC0 recording",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -2.21,
+    "sha256": "d6ba9a01924115ea3f01444a66a6a25cf3fbdcc559eb8910117075014ba53505"
+  },
+  "stream": {
+    "source": "CC0 recording",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -2.59,
+    "sha256": "4f07ed31c1127208540a18904596b78dbcc91c208fcb4304b4d4508fb9672531"
+  },
+  "wind": {
+    "source": "procedural",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -3.28,
+    "sha256": "438cacf503fac1fbe9d9ad8f0030f3c5a006049a286f342e7ae6a5fe43269df1"
+  },
+  "brown": {
+    "source": "procedural",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -3.5,
+    "sha256": "e0870a74d9f640bb082647d3c031aacdefb2bdc0560c6960772645df7e3729b4"
+  },
+  "bubbles": {
+    "source": "procedural",
+    "seconds": 60,
+    "sampleRate": 32000,
+    "channels": 2,
+    "rmsDbFS": -13.15,
+    "peakDbFS": -2.96,
+    "sha256": "53a361a52030a8c1b6f0149de80a9f2f6a21477eac0cb06f49d63cb148e74343"
+  }
+}

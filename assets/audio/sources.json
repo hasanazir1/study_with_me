@@ -1,0 +1,50 @@
+[
+  {
+    "id": "rain",
+    "title": "Soft rain.WAV",
+    "author": "barkenov",
+    "freesoundId": "640655",
+    "sourcePage": "https://freesound.org/people/barkenov/sounds/640655/",
+    "downloadUrl": "https://rainsoundsforsleeping.com/audio/rain-base.mp3",
+    "sourceFilename": "rain.mp3",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "downloadSha256": "feb16dd8d1f8354735e1a52a3b29078ca83d0ed612ed9a5faf613e9b595a7b1e"
+  },
+  {
+    "id": "window",
+    "title": "rain against window 2",
+    "author": "bastipictures",
+    "freesoundId": "243781",
+    "sourcePage": "https://freesound.org/people/bastipictures/sounds/243781/",
+    "downloadUrl": "https://rainsoundsforsleeping.com/audio/window.mp3",
+    "sourceFilename": "window.mp3",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "downloadSha256": "e75938ab97541cf681fd3bf27acf5de4215c6b22eea88b1d03050eb1e8d28e71"
+  },
+  {
+    "id": "ocean",
+    "title": "Gentle Ocean Waves Mix (2018)",
+    "author": "esh9419; includes subtyrant and indieground",
+    "freesoundId": "417797",
+    "sourcePage": "https://freesound.org/people/esh9419/sounds/417797/",
+    "downloadUrl": "https://cdn.freesound.org/previews/417/417797_3285887-hq.mp3",
+    "sourceFilename": "ocean.mp3",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "downloadSha256": "a9865a6b05163a691bc29fe3d559533d2e147c6066b25f515a764e19b980363a"
+  },
+  {
+    "id": "stream",
+    "title": "River Stream",
+    "author": "Fabrizio84",
+    "freesoundId": "457960",
+    "sourcePage": "https://freesound.org/people/Fabrizio84/sounds/457960/",
+    "downloadUrl": "https://cdn.freesound.org/previews/457/457960_2841496-hq.mp3",
+    "sourceFilename": "stream.mp3",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "downloadSha256": "732cdc0fce41f7b1a1db1356031a3453abd6f4c09ca0e9cff8236f9fa0f3d1c9"
+  }
+]

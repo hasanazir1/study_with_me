@@ -32,7 +32,10 @@ public final class AppStore {
             if (!s.has("stopSoundWithTimer")) s.put("stopSoundWithTimer", true);
             if (!s.has("prayerAlerts")) s.put("prayerAlerts", false);
             if (!s.has("prePrayer")) s.put("prePrayer", true);
-            if (!s.has("volume")) s.put("volume", 55);
+            if (!s.has("volume")) s.put("volume", 48);
+            if (!s.has("autoBreak")) s.put("autoBreak", true);
+            if (!s.has("completionSound")) s.put("completionSound", true);
+            if (!s.has("layerVolumes")) s.put("layerVolumes", new JSONObject());
             if (!s.has("sound")) s.put("sound", "rain");
             if (!s.has("theme")) s.put("theme", "light");
             if (!s.has("autoImmersive")) s.put("autoImmersive", true);
@@ -61,6 +64,9 @@ public final class AppStore {
         t.sessionFocusMs = j.optLong("sessionFocusMs");
         t.completedRounds = j.optInt("completedRounds");
         t.message = j.optString("message","");
+        t.autoBreakElapsed = j.optLong("autoBreakElapsed");
+        t.autoBreakWall = j.optLong("autoBreakWall");
+        t.prayerFit = j.optBoolean("prayerFit");
         return t;
     }
     static JSONObject timerJson(TimerCore t) {
@@ -71,7 +77,8 @@ public final class AppStore {
              .put("durationMs",t.durationMs).put("deadlineElapsed",t.deadlineElapsed)
              .put("deadlineWall",t.deadlineWall).put("segmentStartElapsed",t.segmentStartElapsed)
              .put("segmentStartWall",t.segmentStartWall).put("sessionFocusMs",t.sessionFocusMs)
-             .put("completedRounds",t.completedRounds).put("message",t.message);
+             .put("completedRounds",t.completedRounds).put("message",t.message)
+             .put("autoBreakElapsed",t.autoBreakElapsed).put("autoBreakWall",t.autoBreakWall).put("prayerFit",t.prayerFit);
         } catch (Exception ignored) { }
         return j;
     }
@@ -106,16 +113,21 @@ public final class AppStore {
         synchronized (LOCK) {
             TimerCore t = loadTimer(c);
             long now = SystemClock.elapsedRealtime();
+            if (t.startBreakIfDue(now,System.currentTimeMillis())) {
+                saveTimer(c,t);
+                Alarms.scheduleTimer(c,t);
+            }
             if (!t.running() || now < t.deadlineElapsed) return false;
             credit(c,t,now);
             t.finishIfDue(now);
+            if(settings(c).optBoolean("autoBreak",true)) t.queueAutoBreak(now,System.currentTimeMillis());
             if (t.phase.equals("focus")) {
                 String key = "rounds." + dayKey(t.deadlineWall);
                 prefs(c).edit().putInt(key,prefs(c).getInt(key,0)+1).commit();
             }
             saveTimer(c,t);
-            Alarms.cancelTimer(c);
-            Alarms.timerFinished(c,t.phase.equals("focus"));
+            Alarms.scheduleTimer(c,t);
+            Alarms.timerFinished(c,t.phase.equals("focus"),t.waitingForBreak());
             Haptics.pulse(c,false);
             if (settings(c).optBoolean("stopSoundWithTimer",true)) SoundService.stop(c);
             return true;
@@ -131,6 +143,7 @@ public final class AppStore {
                 case "pause": credit(c,t,elapsed); t.pause(elapsed); break;
                 case "reset": credit(c,t,elapsed); t.reset(); break;
                 case "next": credit(c,t,elapsed); t.next(); break;
+                case "cancelAutoBreak": t.cancelAutoBreak(); break;
                 case "preset": t.configure(data.getInt("focus"),data.getInt("rest")); break;
                 case "fit":
                     PrayerEngine.Event next = PrayerEngine.next(prayers(c),wall);
@@ -170,7 +183,7 @@ public final class AppStore {
         synchronized (LOCK) {
             JSONObject s=settings(c);
             java.util.Iterator<String> keys=changes.keys();
-            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects ";
+            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects autoBreak completionSound layerVolumes ";
             while(keys.hasNext()) { String k=keys.next(); if (allowed.contains(" "+k+" ")) s.put(k,changes.get(k)); }
             if(s.optBoolean("configured")) {
                 double lat=s.optDouble("latitude"),lon=s.optDouble("longitude");
@@ -179,12 +192,16 @@ public final class AppStore {
             }
             if (s.optString("city").length()>80 || s.optString("task").length()>120) throw new IllegalArgumentException("النص طويل جدًا");
             if (s.optInt("volume")<0||s.optInt("volume")>100) throw new IllegalArgumentException("Invalid volume");
-            if (!java.util.Arrays.asList("rain","ocean","stream","brown").contains(s.optString("sound"))) throw new IllegalArgumentException("Invalid sound");
+            if (!java.util.Arrays.asList("rain","ocean","stream","brown","silence").contains(s.optString("sound"))) throw new IllegalArgumentException("Invalid sound");
+            JSONObject layers=s.getJSONObject("layerVolumes");
+            java.util.Iterator<String> layerKeys=layers.keys();
+            while(layerKeys.hasNext()) {String key=layerKeys.next();if(!key.matches("(rain|ocean|stream|brown)_[01]")||layers.getInt(key)<0||layers.getInt(key)>100)throw new IllegalArgumentException("Invalid layer volume");}
             JSONArray offsets=s.getJSONArray("offsets");
             if (offsets.length()!=5) throw new IllegalArgumentException("Invalid offsets");
             for(int i=0;i<5;i++) if(Math.abs(offsets.getInt(i))>60) throw new IllegalArgumentException("التعديل المسموح من −٦٠ إلى ٦٠ دقيقة");
             if (s.optDouble("fajrAngle")<10||s.optDouble("fajrAngle")>23||s.optDouble("ishaAngle")<10||s.optDouble("ishaAngle")>23) throw new IllegalArgumentException("زاوية الحساب بين ١٠ و٢٣ درجة");
             prefs(c).edit().putString("settings",s.toString()).commit();
+            if(!s.optBoolean("autoBreak",true)){TimerCore t=loadTimer(c);if(t.waitingForBreak()){t.cancelAutoBreak();saveTimer(c,t);Alarms.scheduleTimer(c,t);}}
             prayerCacheKey="";
             Alarms.schedulePrayer(c);
         }
@@ -194,6 +211,10 @@ public final class AppStore {
             finishDue(c);
             TimerCore t=loadTimer(c);
             boolean pause=settings(c).optBoolean("pauseAtPrayer",true);
+            if(t.waitingForBreak() && pause) {
+                t.cancelAutoBreak();t.message="حان وقت "+name+". الراحة محفوظة، ابدأها لما ترجع.";
+                saveTimer(c,t);Alarms.cancelTimer(c);
+            }
             if(t.running() && pause) {
                 long now=SystemClock.elapsedRealtime(); credit(c,t,now); t.pause(now);
                 t.message="حان وقت "+name+". صلِّ، وكمّل جلستك لما ترجع.";
@@ -210,6 +231,7 @@ public final class AppStore {
                 TimerCore t=loadTimer(c);
                 JSONObject timer=timerJson(t);
                 timer.put("remainingMs",t.remaining(SystemClock.elapsedRealtime()));
+                timer.put("autoBreakRemainingMs",t.waitingForBreak()?Math.max(0,t.autoBreakElapsed-SystemClock.elapsedRealtime()):0);
                 result.put("timer",timer);
                 JSONObject s=settings(c); result.put("settings",s);
                 result.put("now",System.currentTimeMillis());
@@ -223,6 +245,8 @@ public final class AppStore {
                 }
                 result.put("todayMs",total).put("todayRounds",prefs(c).getInt("rounds."+dayKey(System.currentTimeMillis()),0));
                 result.put("soundPlaying",SoundService.active);
+                result.put("soundLoading",SoundService.loading);
+                result.put("sleepRemainingMs",SoundService.sleepRemaining());
                 result.put("audioError",prefs(c).getString("audioError",""));
                 result.put("exactAlarms",Alarms.exactAllowed(c));
                 result.put("notifications",Alarms.notificationsAllowed(c));

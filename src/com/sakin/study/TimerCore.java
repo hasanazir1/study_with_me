@@ -15,6 +15,9 @@ public final class TimerCore {
     public long sessionFocusMs = 0;
     public int completedRounds = 0;
     public String message = "";
+    public long autoBreakElapsed = 0;
+    public long autoBreakWall = 0;
+    public boolean prayerFit = false;
 
     public boolean running() { return status.equals("running"); }
 
@@ -25,7 +28,7 @@ public final class TimerCore {
     public void configure(int focus, int rest) {
         if (focus < 1 || focus > 240 || rest < 1 || rest > 120)
             throw new IllegalArgumentException("Invalid timer duration");
-        if (running() || status.equals("paused"))
+        if (running() || status.equals("paused") || waitingForBreak())
             throw new IllegalStateException("Finish or reset the current timer first");
         focusMinutes = focus;
         breakMinutes = rest;
@@ -43,6 +46,7 @@ public final class TimerCore {
         segmentStartElapsed = elapsed;
         segmentStartWall = wall;
         message = "";
+        cancelAutoBreak();
     }
 
     public long creditUntil(long elapsed) {
@@ -75,6 +79,8 @@ public final class TimerCore {
     }
 
     public void reset() {
+        cancelAutoBreak();
+        prayerFit = false;
         status = "ready";
         durationMs = (phase.equals("focus") ? focusMinutes : breakMinutes) * 60000L;
         remainingMs = durationMs;
@@ -90,9 +96,30 @@ public final class TimerCore {
         reset();
         durationMs = Math.max(60000L, Math.min(focusMinutes * 60000L, milliseconds));
         remainingMs = durationMs;
+        prayerFit = true;
+    }
+
+    public boolean waitingForBreak() { return status.equals("finished") && autoBreakElapsed > 0; }
+
+    public void queueAutoBreak(long elapsed, long wall) {
+        if (!status.equals("finished") || !phase.equals("focus") || prayerFit || waitingForBreak()) return;
+        // Five seconds after the completion is delivered, even after a delayed alarm.
+        autoBreakElapsed = elapsed + 5000;
+        autoBreakWall = wall + 5000;
+    }
+
+    public void cancelAutoBreak() { autoBreakElapsed = 0; autoBreakWall = 0; }
+
+    public boolean startBreakIfDue(long elapsed, long wall) {
+        if (!waitingForBreak() || elapsed < autoBreakElapsed) return false;
+        long start = autoBreakElapsed;
+        next();
+        start(start, wall - (elapsed - start));
+        return true;
     }
 
     public void recoverAfterReboot(long wall) {
+        cancelAutoBreak();
         if (!running()) return;
         remainingMs = Math.max(0, Math.min(durationMs, deadlineWall - wall));
         status = remainingMs > 0 ? "paused" : "finished";

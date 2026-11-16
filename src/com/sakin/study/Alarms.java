@@ -30,7 +30,7 @@ public final class Alarms {
     }
     public static void scheduleTimer(Context c,TimerCore t) {
         cancelTimer(c);
-        if(t.running()) schedule(c,AlarmManager.ELAPSED_REALTIME_WAKEUP,t.deadlineElapsed,pending(c,TIMER,10,"",0));
+        if(t.running()||t.waitingForBreak()) schedule(c,AlarmManager.ELAPSED_REALTIME_WAKEUP,t.waitingForBreak()?t.autoBreakElapsed:t.deadlineElapsed,pending(c,TIMER,10,"",0));
     }
     public static void cancelTimer(Context c) { manager(c).cancel(pending(c,TIMER,10,"",0)); }
     public static void schedulePrayer(Context c) {
@@ -49,9 +49,12 @@ public final class Alarms {
     }
     public static void channels(Context c) {
         NotificationManager nm=(NotificationManager)c.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel timer=new NotificationChannel("timer","نهاية جلسة الدراسة",NotificationManager.IMPORTANCE_HIGH);
-        timer.setDescription("تنبيه خفيف عند انتهاء الدراسة أو الاستراحة");timer.enableVibration(true);
+        NotificationChannel timer=new NotificationChannel("timer_v2","نهاية الجلسة — نغمة سَكَن",NotificationManager.IMPORTANCE_HIGH);
+        timer.setSound(android.net.Uri.parse("android.resource://"+c.getPackageName()+"/raw/session_end"),new android.media.AudioAttributes.Builder().setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION_EVENT).setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+        timer.setDescription("تنبيه خفيف عند انتهاء الدراسة أو الاستراحة");timer.enableVibration(false);
         nm.createNotificationChannel(timer);
+        NotificationChannel quiet=new NotificationChannel("timer_quiet","نهاية الجلسة — بدون نغمة",NotificationManager.IMPORTANCE_HIGH);
+        quiet.setSound(null,null);quiet.enableVibration(false);nm.createNotificationChannel(quiet);
         NotificationChannel prayer=new NotificationChannel("prayer","تنبيهات الصلاة",NotificationManager.IMPORTANCE_HIGH);
         prayer.setDescription("تنبيه عند الصلاة وقبلها بخمس دقائق"); prayer.enableVibration(true);
         nm.createNotificationChannel(prayer);
@@ -69,8 +72,10 @@ public final class Alarms {
             .setContentIntent(openApp(c)).setAutoCancel(true).setCategory(Notification.CATEGORY_REMINDER).build();
         ((NotificationManager)c.getSystemService(Context.NOTIFICATION_SERVICE)).notify(id,n);
     }
-    public static void timerFinished(Context c,boolean focus) {
-        notify(c,40,"timer",focus?"أحسنت، خلصت جلستك 🌿":"انتهت الاستراحة",focus?"خذ نفس وابدأ راحتك لما تكون جاهز.":"جاهز لجلسة جديدة؟ افتح سَكَن وابدأ.");
+    public static void timerFinished(Context c,boolean focus,boolean autoBreak) {
+        boolean audible=AppStore.settings(c).optBoolean("completionSound",true);
+        notify(c,40,audible?"timer_v2":"timer_quiet",focus?"أحسنت، خلصت جلستك 🌿":"انتهت الاستراحة",focus?(autoBreak?"راحتك تبدأ تلقائيًا بعد خمس ثوانٍ. تقدر تلغيها من التطبيق.":"خذ نفس وابدأ راحتك لما تكون جاهز."):"جاهز لجلسة جديدة؟ افتح سَكَن وابدأ.");
+        if(audible&&!notificationsAllowed(c)&&MainActivity.visible)CompletionTone.play(c);
     }
     public static void prayer(Context c,String name,boolean before) {
         notify(c,before?42:41,"prayer",before?"باقي خمس دقائق على "+name:"حان وقت صلاة "+name,before?"فرصة تختم هالجزء وتجهز للصلاة.":"تقبّل الله. جلستك محفوظة، كمّل لما ترجع.");

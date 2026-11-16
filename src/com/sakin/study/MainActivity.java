@@ -34,6 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.util.TimeZone;
 
 public final class MainActivity extends Activity {
+    static volatile boolean visible=false;
     private WebView web;
     private NativePresentation presentation;
     private android.window.OnBackInvokedCallback backCallback;
@@ -76,13 +77,14 @@ public final class MainActivity extends Activity {
         Alarms.channels(this);Alarms.scheduleTimer(this,AppStore.loadTimer(this));Alarms.schedulePrayer(this);
         updateScreen();
     }
-    @Override protected void onResume(){super.onResume();if(presentation!=null)presentation.resume();updateScreen();Alarms.scheduleTimer(this,AppStore.loadTimer(this));Alarms.schedulePrayer(this);}
-    @Override protected void onPause(){if(presentation!=null)presentation.pause();super.onPause();}
+    @Override protected void onResume(){super.onResume();visible=true;if(presentation!=null)presentation.resume();updateScreen();Alarms.scheduleTimer(this,AppStore.loadTimer(this));Alarms.schedulePrayer(this);}
+    @Override protected void onPause(){visible=false;if(presentation!=null)presentation.pause();super.onPause();}
     @Override public void onWindowFocusChanged(boolean focused){super.onWindowFocusChanged(focused);if(presentation!=null)presentation.focus(focused);}
     @Override public void onConfigurationChanged(Configuration configuration){super.onConfigurationChanged(configuration);if(presentation!=null)presentation.configuration(configuration);}
     void updateScreen(){if(presentation!=null)presentation.sync();}
     void toast(String value){runOnUiThread(()->Toast.makeText(this,value,Toast.LENGTH_LONG).show());}
     public final class Bridge {
+        @JavascriptInterface public String getAudioCatalog(){try{return AudioCatalog.all(MainActivity.this).toString();}catch(Exception e){return "[]";}}
         @JavascriptInterface public String getSnapshot(){
             try{JSONObject snapshot=new JSONObject(AppStore.snapshot(MainActivity.this));if(presentation!=null)snapshot.put("presentation",presentation.snapshot());return snapshot.toString();}
             catch(Exception ignored){return AppStore.snapshot(MainActivity.this);}
@@ -94,6 +96,10 @@ public final class MainActivity extends Activity {
                     SoundService.play(MainActivity.this);
                 }else if(action.equals("sound")){
                     if(SoundService.active)SoundService.stop(MainActivity.this);else SoundService.play(MainActivity.this);
+                }else if(action.equals("audioSleep")){
+                    SoundService.setSleep(MainActivity.this,new JSONObject(payload).optInt("minutes"));
+                }else if(action.equals("previewChime")){
+                    CompletionTone.play(MainActivity.this);
                 }else AppStore.command(MainActivity.this,action,new JSONObject(payload));
                 if((action.equals("start")||action.equals("fit"))&&!wasRunning&&AppStore.loadTimer(MainActivity.this).running())Haptics.pulse(MainActivity.this,true);
                 if((action.equals("start")||action.equals("fit")||action.equals("sound")||action.equals("playSound"))&&Build.VERSION.SDK_INT>=33&&checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED&&!AppStore.prefs(MainActivity.this).getBoolean("notificationRequested",false)){

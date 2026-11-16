@@ -1,0 +1,119 @@
+[
+  {
+    "id": "rain",
+    "name": "مطر على الشباك",
+    "icon": "rain",
+    "description": "مطر طبيعي وقطرات على الزجاج",
+    "colors": {
+      "accent": "#A8C3A0",
+      "tint": "#DCE6DF"
+    },
+    "effect": "rain",
+    "character": "study",
+    "layers": [
+      {
+        "file": "rain.wav",
+        "name": "مطر ناعم",
+        "volume": 90,
+        "gain": 0.9
+      },
+      {
+        "file": "window.wav",
+        "name": "قطرات الشباك",
+        "volume": 28,
+        "gain": 0.3
+      }
+    ]
+  },
+  {
+    "id": "ocean",
+    "name": "بحر هادئ",
+    "icon": "waves",
+    "description": "موج يتمدّد ويرجع على الشاطئ",
+    "colors": {
+      "accent": "#A5C1C4",
+      "tint": "#DDE8E5"
+    },
+    "effect": "ocean",
+    "character": "study",
+    "layers": [
+      {
+        "file": "ocean.wav",
+        "name": "أمواج البحر",
+        "volume": 85,
+        "gain": 0.9
+      },
+      {
+        "file": "wind.wav",
+        "name": "نسمة ساحل",
+        "volume": 22,
+        "gain": 0.3
+      }
+    ]
+  },
+  {
+    "id": "stream",
+    "name": "جدول مياه",
+    "icon": "water",
+    "description": "مياه جارية وفقاعات خفيفة",
+    "colors": {
+      "accent": "#B3C9A3",
+      "tint": "#E3E8D8"
+    },
+    "effect": "nature",
+    "character": "study",
+    "layers": [
+      {
+        "file": "stream.wav",
+        "name": "مياه جارية",
+        "volume": 90,
+        "gain": 0.9
+      },
+      {
+        "file": "bubbles.wav",
+        "name": "فقاعات لطيفة",
+        "volume": 20,
+        "gain": 0.25
+      }
+    ]
+  },
+  {
+    "id": "brown",
+    "name": "ضجيج بني دافئ",
+    "icon": "noise",
+    "description": "صوت منخفض ومتّصل للتركيز",
+    "colors": {
+      "accent": "#C9B498",
+      "tint": "#EEE2D3"
+    },
+    "effect": "quiet",
+    "character": "study",
+    "layers": [
+      {
+        "file": "brown.wav",
+        "name": "دفء منخفض",
+        "volume": 95,
+        "gain": 1
+      },
+      {
+        "file": "wind.wav",
+        "name": "هواء خفيف",
+        "volume": 10,
+        "gain": 0.2
+      }
+    ]
+  },
+  {
+    "id": "silence",
+    "name": "هدوء",
+    "icon": "moon",
+    "description": "مساحة صامتة، على راحتك",
+    "colors": {
+      "accent": "#A8C3A0",
+      "tint": "#ECE8DF"
+    },
+    "effect": "quiet",
+    "character": "study",
+    "layers": []
+  }
+]

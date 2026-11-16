@@ -1,7 +1,6 @@
 package com.sakin.study;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /** Pure sample-clock stereo mixer. No allocation, file IO or Android calls in render(). */
 public final class PcmMixer {
@@ -36,7 +35,8 @@ public final class PcmMixer {
         for(int frame=0;frame<output.length;frame+=2){
             master=approach(master,masterTarget,STEP);duck=approach(duck,duckTarget,1f/(RATE*.2f));
             float left=0,right=0;
-            for(Layer l:layers){
+            for(int i=0;i<layers.size();i++){
+                Layer l=layers.get(i);
                 l.gain=approach(l.gain,l.target,STEP);
                 left+=l.pcm[l.cursor]*l.gain;right+=l.pcm[l.cursor+1]*l.gain;
                 l.cursor+=2;if(l.cursor>=l.pcm.length)l.cursor=0;
@@ -45,7 +45,7 @@ public final class PcmMixer {
             output[frame+1]=(short)Math.max(-32767,Math.min(32767,Math.round(right*master*duck)));
         }
         // Old scenes release PCM after their fade, including rapid switching.
-        Iterator<Layer> it=layers.iterator();while(it.hasNext()){Layer l=it.next();if(l.target==0&&l.gain==0)it.remove();}
+        for(int i=layers.size()-1;i>=0;i--){Layer l=layers.get(i);if(l.target==0&&l.gain==0)layers.remove(i);}
     }
     static float clamp(float x){return Math.max(0,Math.min(1,x));}
     static float approach(float x,float target,float step){return x<target?Math.min(target,x+step):Math.max(target,x-step);}

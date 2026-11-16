@@ -8,7 +8,7 @@ cd study_with_me
 git status
 ```
 
-Read `AGENTS.md` and `docs/PROGRESS.md` before a change. The latest milestone is phase two (1.2.0 / code 3), awaiting device feedback; future phases need the user's request to proceed.
+Read `AGENTS.md` and `docs/PROGRESS.md` before a change. The latest milestone is phase two (1.2.1 / code 4), awaiting device feedback; future phases need the user's request to proceed.
 
 ## Requirements
 
@@ -81,7 +81,7 @@ Before delivering a new APK:
 2. Update `CHANGELOG.md` and `docs/PROGRESS.md`, including actual verification limits.
 3. Build with the original key, verify signature/alignment and compare the signing certificate with the previous official APK.
 4. Run the relevant checks and the short Android device checklist.
-5. Commit the result and create a version tag such as `v1.2.0`.
+5. Commit the result and create a version tag such as `v1.2.1`.
 6. Publish the signed APK in GitHub Releases with concise changes and a checksum; do not commit APK/build outputs into Git.
 
 ## Sharing with another AI

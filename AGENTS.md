@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-The current app milestone is phase two, Android 1.2.0 / versionCode 3. The user requested improved audio/motion, an audible completion cue and automatic rest after five seconds. Phase two is implemented and awaiting device feedback. Do not start phase three (visual scenes) until requested. Read docs/AUDIO.md for the native PCM engine and source licenses.
+The current app milestone is phase two, Android 1.2.1 / versionCode 4. The user requested improved audio/motion, an audible completion cue and automatic rest after five seconds. Phase two is implemented and awaiting device feedback. Do not start phase three (visual scenes) until requested. Read docs/AUDIO.md for the native PCM engine and source licenses.
 
 ## Product constraints
 

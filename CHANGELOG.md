@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1 — Phase-two final build — 2026-11-16
+
+- Removed per-sample ArrayList iterator creation in the continuous audio mixer; indexed loops avoid temporary allocations in render().
+- VersionCode 4 updates both the previous installed app and the preliminary phase-two code-3 APK shared while repository upload was running. No sound asset or UI behavior change.
+
 ## 1.2.0 — Phase two — 2026-11-16
 
 - Replaced 24-second mono synthetic ambience with seven distinct 60-second stereo layers: licensed CC0 rain/window/ocean/stream recordings and procedural wind/brown/bubbles.

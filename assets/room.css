@@ -1,0 +1,68 @@
+/* Phase three prototype: a small local SVG room, with two reusable crossfade layers. */
+.room-panel{grid-area:room;position:relative;min-height:0;min-width:0;overflow:hidden;border-radius:24px;background:#E5E7DC;isolation:isolate;contain:layout paint}
+.room-scene{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .65s ease;pointer-events:none;--wall:#E7E3D9;--side:#D8DDD3;--sky:#C4D6D5;--floor:#C9B79D}
+.room-scene.is-active{opacity:1;z-index:1}.room-scene svg{display:block;width:100%;height:100%;max-width:none}
+.room-scene:before{content:'';position:absolute;inset:0;background:var(--wall);z-index:-1}
+.room-picker{position:absolute;top:10px;right:10px;z-index:3;background:rgba(250,247,242,.92);border-radius:99px;display:flex;align-items:center;gap:6px;font-size:10px;min-height:34px;padding:6px 11px;box-shadow:0 3px 16px #3331;color:#454B40}
+.room-picker svg{width:15px;height:15px}.room-picker svg:last-child{width:10px;height:10px}
+.room-caption{position:absolute;left:12px;bottom:9px;z-index:2;font-size:8px;color:#535A4C;background:rgba(250,247,242,.8);border-radius:99px;padding:4px 9px;pointer-events:none}
+.room-rain,.room-mist,.room-flash,.room-stars,.room-treetops,.room-rays,.room-fireplace,.room-bokeh,.room-fireflies{display:none}
+.room-scene[data-effect=rain] :is(.room-rain,.room-mist,.room-flash){display:block}
+.room-scene[data-effect=nature] :is(.room-treetops,.room-rays,.room-fireflies){display:block}
+.room-scene[data-effect=night] .room-stars,.room-scene[data-effect=fire] .room-fireplace,.room-scene[data-effect=cafe] .room-bokeh{display:block}
+.room-scene[data-effect=fire] .room-bookshelf{opacity:.25}
+.room-scene[data-effect=quiet] .room-steam{display:none}
+.room-scene .room-rain{animation:room-rain-fall 1.8s linear infinite}
+.room-scene .room-flash{opacity:0;animation:room-distant-light 53s linear infinite}
+.room-leaf,.room-treetops,.room-flame,.room-steam{transform-box:fill-box;transform-origin:50% 100%}
+.room-scene[data-effect=nature] .room-leaf{animation:room-leaf-sway 7s ease-in-out infinite}
+.room-scene[data-effect=nature] .room-leaf-right{animation-delay:-3s}
+.room-scene[data-effect=nature] .room-treetops{animation:room-leaf-sway 10s ease-in-out infinite}
+.room-scene .room-star{animation:room-star-twinkle 5s ease-in-out infinite}.room-star:nth-child(3n){animation-delay:-2s}.room-star:nth-child(2n){animation-delay:-3.5s}
+.room-scene .room-flame{animation:room-fire-flicker 3.4s ease-in-out infinite}.room-scene .room-flame-inner{animation-delay:-1.7s}
+.room-scene[data-effect=cafe] .room-steam{animation:room-steam-rise 5s ease-in-out infinite}
+.room-scene .room-fireflies{animation:room-fireflies-drift 9s ease-in-out infinite}
+.room-panel[data-session=focus] .room-lamp-light{opacity:.8}.room-panel[data-session=break] .room-lamp-light{opacity:.35}
+:root[data-theme=dark] .room-scene{--wall:#344D4B!important;--side:#29423F!important;--floor:#4F5B50!important}
+:root[data-theme=dark] .room-panel{background:#29423F}:root[data-theme=dark] .room-picker{background:rgba(30,53,51,.94);color:#E5E5D7}:root[data-theme=dark] .room-caption{background:rgba(30,53,51,.86);color:#D5DBCA}
+:root[data-theme=dark] .prayer-pill{background:rgba(188,167,139,.13)!important}
+.scene-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}
+.scene-choices button{position:relative;background:var(--soft);border-radius:22px;display:grid;grid-template-columns:26px 1fr;gap:3px 10px;align-items:center;text-align:right;padding:15px 12px;min-height:83px}
+.scene-choices button svg{width:23px;height:23px;grid-row:1/3}.scene-choices strong{font-size:12px;font-weight:500}.scene-choices small{font-size:9px;line-height:1.7;color:var(--muted)}
+.scene-choices button[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--sage);background:var(--glass)}
+.scene-note{font-size:11px;color:var(--muted);line-height:1.9}.room-dialog .primary{margin-top:12px;width:100%;font-size:12px}.room-dialog .sheet-subtitle{font-size:11px}
+/* Keep the existing controls, but reserve real space for the room. */
+.desk{grid-template-areas:'top' 'room' 'stage' 'controls' 'presets';grid-template-columns:minmax(0,1fr);grid-template-rows:24px minmax(110px,.8fr) minmax(130px,1.2fr) 48px 34px;gap:9px;padding:15px}
+.desk .timer-stage{min-height:0}.desk .timer-actions{min-height:0}.desk .presets{align-self:stretch}
+@media(max-height:650px) and (orientation:portrait){.desk{padding:10px;gap:5px;grid-template-rows:21px minmax(76px,.8fr) minmax(84px,1fr) 43px 30px}.desk .timer-actions .primary,.desk .timer-actions .secondary{min-height:41px}.desk .presets button{min-height:30px}.desk .orbit-leaf,.desk .duration-caption,.desk #timerHint{display:none}.room-picker{top:6px;right:6px;min-height:28px;font-size:9px;padding:4px 9px}.room-caption{font-size:7px;bottom:5px}.room-panel{border-radius:19px}}
+@media(orientation:landscape) and (min-width:480px),(min-width:1000px){
+ .app{grid-template-areas:'header header' 'prayer utility' 'desk desk';grid-template-columns:minmax(0,1.3fr) minmax(240px,.7fr);grid-template-rows:42px 56px minmax(0,1fr);gap:12px;padding:12px 16px}
+ .desk{grid-template-areas:'room top top' 'room stage controls' 'room stage presets';grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 130px;grid-template-rows:22px minmax(0,1fr) 74px;gap:12px;padding:14px}
+ .desk .timer-actions{display:grid;grid-template-columns:42px minmax(0,1fr);grid-template-rows:45px 40px;align-self:end;gap:7px}.desk .timer-actions>.primary{min-height:45px}.desk .timer-actions>.secondary{min-height:40px}.desk .timer-actions>.primary{grid-column:1/-1}.desk .presets{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:32px 32px;gap:5px;align-self:start}.desk .presets button{min-height:32px}
+ #prayerContent{display:flex;flex-direction:row;align-items:stretch;gap:6px;padding:0;background:transparent!important;box-shadow:none;border-radius:0}
+ .prayer-pill{flex:1;display:flex;align-items:center;gap:9px;padding:7px 12px;border-radius:22px;background:var(--sand)!important;box-shadow:var(--shadow)}
+ .prayer-icon{display:none}.prayer-title{display:grid;grid-template-columns:auto auto;align-items:center;gap:0 7px}.prayer-eyebrow{grid-column:1/-1;font-size:8px}.prayer-title strong{font-size:15px;line-height:1.5}.prayer-title>small{font-size:10px}
+ .prayer-remaining{align-items:flex-end;margin-right:auto;gap:1px}.prayer-remaining>small{font-size:8px}.prayer-remaining>.digits{font-size:19px;line-height:1.4}
+ .city-pill{width:65px;background:var(--glass);box-shadow:var(--shadow);flex-direction:column;justify-content:center;font-size:9px;gap:2px;border-radius:20px}.city-pill>svg:last-child{display:none}.city-pill span{max-width:58px}
+ .empty-prayer{flex-direction:row;text-align:right;gap:12px;padding:8px 14px;border-radius:22px}.empty-prayer strong{font-size:12px}.empty-prayer small{font-size:10px}.empty-prayer>span{flex:1}.empty-prayer>svg:last-child{display:block}
+ .utility-bar{gap:6px}.utility-bar .sound-pill{flex:1}.sound-picker{font-size:10px;padding-inline:9px}.fit-prayer{font-size:9px;padding-inline:10px}.sound-play{width:35px;height:35px}
+}
+@media(orientation:landscape) and (min-width:480px) and (max-height:430px){
+ .app{padding:7px 12px;gap:8px;grid-template-rows:35px 47px minmax(0,1fr)}.desk{padding:10px;gap:8px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 121px;grid-template-rows:20px minmax(0,1fr) 65px}
+ .desk .timer-actions{grid-template-rows:41px 36px;gap:5px}.desk .timer-actions>.primary{min-height:41px;font-size:10px}.desk .timer-actions>.secondary{min-height:36px}.desk .presets{grid-template-rows:29px 29px}.desk .presets button{min-height:29px;font-size:10px}.desk .orbit-leaf,.desk .duration-caption{display:none}
+ .room-picker{top:7px;right:7px;font-size:9px;min-height:30px}.room-caption{font-size:7px}.prayer-title strong{font-size:14px}.prayer-title>small{font-size:9px}.prayer-remaining>.digits{font-size:18px}.city-pill{width:56px}.fit-prayer{min-height:42px}.empty-prayer small{font-size:9px}
+}
+@media(min-width:1000px) and (min-height:650px){.app{padding:26px;gap:18px;grid-template-rows:57px 65px minmax(0,1fr)}.desk{padding:24px;gap:20px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) 155px;grid-template-rows:28px minmax(0,1fr) 80px}.room-picker{font-size:12px;min-height:42px;top:16px;right:16px}.room-caption{font-size:10px;bottom:14px;left:16px}.prayer-title strong{font-size:20px}.prayer-remaining>.digits{font-size:25px}.city-pill{width:90px;font-size:12px}.sound-picker,.fit-prayer{font-size:12px}.desk .timer-actions>.primary{font-size:13px}}
+@keyframes room-rain-fall{from{transform:translateY(-19px)}to{transform:translateY(18px)}}
+@keyframes room-leaf-sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes room-distant-light{0%,96%,98%,100%{opacity:0}96.8%,97.3%{opacity:.12}}
+@keyframes room-star-twinkle{0%,100%{opacity:.35}50%{opacity:.95}}
+@keyframes room-fire-flicker{0%,100%{transform:scale(.96,1);opacity:.8}50%{transform:scale(1.04,.91);opacity:1}}
+@keyframes room-steam-rise{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-7px);opacity:.8}}
+@keyframes room-fireflies-drift{0%,100%{transform:translateY(0);opacity:.25}50%{transform:translateY(-7px);opacity:.75}}
+/* Only the visible layer animates. Hidden pages and light effects stay still. */
+.room-scene:not(.is-active) *{animation-play-state:paused!important}
+:root[data-visible=false] .room-panel *{animation-play-state:paused!important}
+:root[data-effects=light] .room-panel *{animation:none!important;transition:none!important}
+:root[data-effects=light] .room-flash{display:none!important}
+@media(prefers-reduced-motion:reduce){.room-panel *{animation:none!important;transition:none!important}.room-flash{display:none!important}}

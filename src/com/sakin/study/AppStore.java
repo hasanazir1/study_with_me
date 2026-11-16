@@ -37,6 +37,7 @@ public final class AppStore {
             if (!s.has("completionSound")) s.put("completionSound", true);
             if (!s.has("layerVolumes")) s.put("layerVolumes", new JSONObject());
             if (!s.has("sound")) s.put("sound", "rain");
+            if (!s.has("visualScene")) s.put("visualScene", "rain");
             if (!s.has("theme")) s.put("theme", "light");
             if (!s.has("autoImmersive")) s.put("autoImmersive", true);
             if (!s.has("haptics")) s.put("haptics", true);
@@ -183,7 +184,7 @@ public final class AppStore {
         synchronized (LOCK) {
             JSONObject s=settings(c);
             java.util.Iterator<String> keys=changes.keys();
-            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects autoBreak completionSound layerVolumes ";
+            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects autoBreak completionSound layerVolumes visualScene ";
             while(keys.hasNext()) { String k=keys.next(); if (allowed.contains(" "+k+" ")) s.put(k,changes.get(k)); }
             if(s.optBoolean("configured")) {
                 double lat=s.optDouble("latitude"),lon=s.optDouble("longitude");
@@ -193,6 +194,7 @@ public final class AppStore {
             if (s.optString("city").length()>80 || s.optString("task").length()>120) throw new IllegalArgumentException("النص طويل جدًا");
             if (s.optInt("volume")<0||s.optInt("volume")>100) throw new IllegalArgumentException("Invalid volume");
             if (!java.util.Arrays.asList("rain","ocean","stream","brown","silence").contains(s.optString("sound"))) throw new IllegalArgumentException("Invalid sound");
+            if (!java.util.Arrays.asList("rain","nature","fire","cafe","night","quiet").contains(s.optString("visualScene"))) throw new IllegalArgumentException("Invalid visual scene");
             JSONObject layers=s.getJSONObject("layerVolumes");
             java.util.Iterator<String> layerKeys=layers.keys();
             while(layerKeys.hasNext()) {String key=layerKeys.next();if(!key.matches("(rain|ocean|stream|brown)_[01]")||layers.getInt(key)<0||layers.getInt(key)>100)throw new IllegalArgumentException("Invalid layer volume");}

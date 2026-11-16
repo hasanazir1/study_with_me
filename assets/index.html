@@ -8,6 +8,7 @@
   <title>سَكَن • رفيق الدراسة</title>
   <link rel="preload" href="fonts/ReadexPro.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="room.css">
 </head>
 <body>
 <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -28,7 +29,6 @@
   <symbol id="icon-volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Zm12 0q3 3 0 6m3-9q6 6 0 12"/></symbol>
   <symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 6-7 11-7 11S5 16 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
 <symbol id="chevron" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol><symbol id="book" viewBox="0 0 24 24"><path d="M3 5q5-2 9 2 4-4 9-2v14q-5-2-9 2-4-4-9-2ZM12 7v14"/></symbol><symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h7m6 0h3M4 17h3m6 0h7"/><circle cx="14" cy="7" r="3"/><circle cx="10" cy="17" r="3"/></symbol></defs></svg>
-<div class="room" aria-hidden="true"><div class="window-halo"></div><div class="room-window"><span></span><span></span><span></span><span></span></div><div class="room-sill"></div><div class="leaf-shadow leaf-a"></div><div class="leaf-shadow leaf-b"></div></div>
 <div class="app">
   <header class="topbar">
     <div class="brand"><svg class="brand-mark"><use href="#leaf"/></svg><div><span class="brand-name">سَكَن</span><span class="brand-sub">مساحة صغيرة، وتركيز أعمق</span></div></div>
@@ -47,6 +47,11 @@
 
   <main class="desk" aria-label="مؤقّت الدراسة">
     <div class="desk-top"><button id="openTask" class="task-preview" aria-label="تحديد هدف الجلسة"><svg><use href="#book"/></svg><span id="taskPreview">شو هدف جلستك؟</span></button><span id="roundLabel" class="round-label">جلسة جديدة</span></div>
+    <section id="roomPanel" class="room-panel" aria-label="غرفة الدراسة">
+      <div class="room-scene" aria-hidden="true"></div><div class="room-scene" aria-hidden="true"></div>
+      <button id="openRoom" class="room-picker" aria-label="اختيار أجواء الغرفة"><svg><use id="roomUse" href="#rain"/></svg><span id="roomName">مطر الشباك</span><svg><use href="#chevron"/></svg></button>
+      <span id="roomCaption" class="room-caption">قطرات وضوء ناعم</span>
+    </section>
     <div class="timer-stage" id="timerStage">
       <div class="timer-orbit" id="timerOrbit">
         <svg class="timer-ring" viewBox="0 0 240 240" role="img" aria-label="تقدّم الجلسة"><circle class="ring-track" cx="120" cy="120" r="109"/><circle id="progressArc" class="ring-progress" cx="120" cy="120" r="109" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
@@ -127,7 +132,7 @@
     <button id="allowExact" class="permission-row"><span>التوقيت الدقيق</span><span id="exactStatus"></span></button>
     <p class="muted tiny">اضغط كل إذن لتفعيله. بدون التوقيت الدقيق ممكن يتأخر التنبيه بالخلفية. بعض الجوالات تحتاج السماح للتطبيق بالعمل بالخلفية من إعدادات البطارية.</p>
   </section>
-  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٢ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
+  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٢ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.3.0 — MIT
 Copyright (c) 2016 Batoul Apps
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -230,7 +235,18 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 </pre></details></div>
 </dialog>
 
+<dialog id="roomDialog" class="sheet room-dialog" aria-labelledby="roomTitle">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <header class="sheet-header"><div><span class="eyebrow">غرفتك الصغيرة</span><h2 id="roomTitle">اختَر جوّك</h2></div><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></header>
+  <p class="scene-note">ست أجواء بسيطة لنفس الغرفة. اختَر المكان اللي بيريّحك.</p>
+  <div id="roomChoices" class="scene-choices" aria-label="أجواء الغرفة"></div>
+  <p class="scene-note">تغيير الجو بصري فقط. الصوت بتختاره بشكل مستقل من زر الأصوات، وما بيتغيّر لحاله.</p>
+  <button id="roomSound" class="primary" type="button" hidden>اختيار صوت مناسب</button>
+  <p class="scene-note section-gap">نسخة أولية للمشاهد. الشخصية وحركات الدراسة بالمرحلة القادمة.</p>
+</dialog>
+
 <div id="toast" class="toast" role="status" hidden></div>
+<script src="room.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

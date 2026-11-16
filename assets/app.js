@@ -134,6 +134,7 @@
     root.dataset.visible=String(!document.hidden);
     root.dataset.audioPlaying=String(snapshot.soundPlaying);
     root.dataset.waiting=String(Boolean(t.autoBreakRemainingMs));
+    if(window.SakinRoom)window.SakinRoom.render(snapshot);
     if(snapshot.presentation){far=Boolean(snapshot.presentation.immersive);root.dataset.immersive=String(far);$('displayMode').setAttribute('aria-pressed',String(far));$('displayMode').setAttribute('aria-label',far?'الخروج من ملء الشاشة':'ملء الشاشة');}
     const clock=timeParts(snapshot.now);
     $('clock').textContent=clock.digits;$('ampm').textContent=clock.period;
@@ -315,9 +316,10 @@
   window.sakinNativePresentation=presentationChange;
   document.addEventListener('pointerdown',revealControls,true);
   document.addEventListener('keydown',revealControls,true);
-  document.addEventListener('visibilitychange',()=>{root.dataset.visible=String(!document.hidden);clearTimeout(refreshTimer);clearTimeout(idleTimer);cancelAnimationFrame(motionFrame);motionFrame=0;if(document.hidden){if(typeof document.getAnimations==='function')document.getAnimations().forEach(animation=>animation.cancel());}else{refreshLoop();revealControls();sizeOrbit();}});
+  document.addEventListener('visibilitychange',()=>{root.dataset.visible=String(!document.hidden);clearTimeout(refreshTimer);clearTimeout(idleTimer);cancelAnimationFrame(motionFrame);motionFrame=0;if(document.hidden){if(typeof document.getAnimations==='function')document.getAnimations().forEach(animation=>{const target=animation.effect&&animation.effect.target;if(!target||!target.closest||!target.closest('.room-panel'))animation.cancel();});}else{refreshLoop();revealControls();sizeOrbit();}});
   window.addEventListener('resize',sizeOrbit);
   if(typeof ResizeObserver==='function'){orbitObserver=new ResizeObserver(sizeOrbit);orbitObserver.observe($('timerStage'));}
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sizeOrbit);
+  if(window.SakinRoom)window.SakinRoom.connect({save,open});
   refreshLoop();sizeOrbit();
 })();

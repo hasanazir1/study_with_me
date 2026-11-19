@@ -2,7 +2,7 @@ name: Project checks
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/game-room-v2]
   pull_request:
   workflow_dispatch:
 
@@ -35,10 +35,22 @@ jobs:
       - name: Test timer and prayer calculations
         run: python tests/run_tests.py
       - name: Check interface wiring
-        run: python tests/check_ui.py
+        run: |
+          python tests/check_ui.py
+          python tests/check_scene.py
       - name: Verify offline audio assets and mix headroom
         run: python tests/check_audio.py
       - name: Check JavaScript syntax
         run: |
           node --check assets/app.js
           node --check assets/room.js
+          node --check assets/game-room.js
+      - name: Exercise the game room and fallback interfaces
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/sakin-browser/node_modules/playwright
+        run: |
+          npm install --prefix "$RUNNER_TEMP/sakin-browser" playwright@1.56.1
+          "$RUNNER_TEMP/sakin-browser/node_modules/.bin/playwright" install --with-deps chromium
+          node tests/browser_game.cjs
+          node tests/browser_ui.cjs
+          node tests/browser_rooms.cjs

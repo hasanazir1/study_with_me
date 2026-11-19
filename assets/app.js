@@ -77,7 +77,7 @@
   }
   function presentationChange(){
     refresh();sizeOrbit();
-    if(!reduced()&&!document.hidden&&typeof document.querySelector('.app').animate==='function'){
+    if(!root.dataset.game&&!reduced()&&!document.hidden&&typeof document.querySelector('.app').animate==='function'){
       if(presentationAnimation)presentationAnimation.cancel();
       presentationAnimation=document.querySelector('.app').animate([{opacity:.65,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:450,easing:'cubic-bezier(.2,.7,.2,1)'});
     }
@@ -94,7 +94,7 @@
     }
     if(t.status==='running'&&!reduced())motionFrame=requestAnimationFrame(motion);
   }
-  function startMotion(){if(!motionFrame&&!document.hidden&&snapshot.timer.status==='running'&&!reduced())motionFrame=requestAnimationFrame(motion);}
+  function startMotion(){if(!root.dataset.game&&!motionFrame&&!document.hidden&&snapshot.timer.status==='running'&&!reduced())motionFrame=requestAnimationFrame(motion);}
   const locationKey=s=>[s.configured,s.gps,s.latitude,s.longitude].join('|');
   function requestLocation(){locating=true;locationBefore=locationKey(snapshot.settings);native.requestLocation();}
   const arabic = number => Number(number).toLocaleString('ar');
@@ -165,6 +165,7 @@
     if(document.activeElement!==$('task'))$('task').value=s.task||'';
     $('taskPreview').textContent=s.task||'شو هدف جلستك؟';
     const next=nextPrayer();
+    window.GameRoom?.render(snapshot, {time:clockText(snapshot.now), remaining:countdown(t.remainingMs), prayer:next?next.name+' '+clockText(next.time)+' · باقي '+countdown(next.time-snapshot.now,true):'اختَر مدينتك لمواقيت الصلاة'});
     $('prayerEmpty').hidden=Boolean(next);$('prayerContent').hidden=!next;
     $('prayerError').hidden=!snapshot.prayerError;$('prayerError').textContent=snapshot.prayerError||'';
     $('fitPrayer').disabled=!next||active||next.time-snapshot.now<120000;
@@ -315,7 +316,7 @@
   $('allowNotifications').addEventListener('click',()=>native.requestNotifications());$('allowExact').addEventListener('click',()=>native.requestExactAlarms());
   document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeSheet(button.closest('dialog'))));
   document.querySelectorAll('dialog').forEach(dialog=>{dialog.addEventListener('cancel',event=>{event.preventDefault();closeSheet(dialog);});dialog.addEventListener('close',revealControls);dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeSheet(dialog);}});});
-  window.sakinBack=()=>{const openDialog=document.querySelector('dialog[open]');if(openDialog){closeSheet(openDialog);return true;}if(far){$('displayMode').click();return true;}return false;};
+  window.sakinBack=()=>{const openDialog=document.querySelector('dialog[open]');if(openDialog){closeSheet(openDialog);return true;}if(window.GameRoom?.back())return true;if(far){$('displayMode').click();return true;}return false;};
   window.sakinNativePresentation=presentationChange;
   document.addEventListener('pointerdown',revealControls,true);
   document.addEventListener('keydown',revealControls,true);
@@ -324,5 +325,6 @@
   if(typeof ResizeObserver==='function'){orbitObserver=new ResizeObserver(sizeOrbit);orbitObserver.observe($('timerStage'));}
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sizeOrbit);
   if(window.SakinRoom)window.SakinRoom.connect({save,open});
+  window.GameRoom?.connect({open,save,command,refresh,toast});
   refreshLoop();sizeOrbit();
 })();

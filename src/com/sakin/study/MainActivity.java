@@ -63,7 +63,7 @@ public final class MainActivity extends Activity {
                 if("https".equals(uri.getScheme())&&"appassets.sakin.local".equals(uri.getHost())){
                     String path=uri.getPath();if(path==null||path.contains(".."))return blocked();
                     if(path.equals("/"))path="/index.html";
-                    String mime=path.endsWith(".webp")?"image/webp":path.endsWith(".css")?"text/css":path.endsWith(".js")?"application/javascript":path.endsWith(".ttf")?"font/ttf":path.endsWith(".txt")?"text/plain":path.endsWith(".wav")?"audio/wav":"text/html";
+                    String mime=path.endsWith(".json")?"application/json":path.endsWith(".webp")?"image/webp":path.endsWith(".css")?"text/css":path.endsWith(".js")?"application/javascript":path.endsWith(".ttf")?"font/ttf":path.endsWith(".txt")?"text/plain":path.endsWith(".wav")?"audio/wav":"text/html";
                     try{return new WebResourceResponse(mime,mime.startsWith("image/")||mime.startsWith("font/")||mime.startsWith("audio/")?null:"UTF-8",getAssets().open(path.substring(1)));}catch(Exception e){return blocked();}
                 }
                 return blocked();
@@ -84,6 +84,10 @@ public final class MainActivity extends Activity {
     void updateScreen(){if(presentation!=null)presentation.sync();}
     void toast(String value){runOnUiThread(()->Toast.makeText(this,value,Toast.LENGTH_LONG).show());}
     public final class Bridge {
+        @JavascriptInterface public void touchFeedback(){
+            if(AppStore.settings(MainActivity.this).optBoolean("haptics",true))
+                runOnUiThread(()->web.performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK));
+        }
         @JavascriptInterface public String getAudioCatalog(){try{return AudioCatalog.all(MainActivity.this).toString();}catch(Exception e){return "[]";}}
         @JavascriptInterface public String getSnapshot(){
             try{JSONObject snapshot=new JSONObject(AppStore.snapshot(MainActivity.this));if(presentation!=null)snapshot.put("presentation",presentation.snapshot());return snapshot.toString();}

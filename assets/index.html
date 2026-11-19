@@ -1,14 +1,17 @@
 <!doctype html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="light" data-game="loading">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#FAF7F2">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <link rel="preload" as="image" href="room/room_clean_wide.webp">
+  <link rel="preload" as="image" href="room/room_study_notebook.webp">
   <title>سَكَن • رفيق الدراسة</title>
   <link rel="preload" href="fonts/ReadexPro.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="app.css">
   <link rel="stylesheet" href="room.css"><link rel="stylesheet" href="interior.css"><link rel="stylesheet" href="illustrated.css">
+<link rel="stylesheet" href="game-room.css">
 </head>
 <body>
 <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -29,7 +32,31 @@
   <symbol id="icon-volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Zm12 0q3 3 0 6m3-9q6 6 0 12"/></symbol>
   <symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 6-7 11-7 11S5 16 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
 <symbol id="chevron" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol><symbol id="book" viewBox="0 0 24 24"><path d="M3 5q5-2 9 2 4-4 9-2v14q-5-2-9 2-4-4-9-2ZM12 7v14"/></symbol><symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h7m6 0h3M4 17h3m6 0h7"/><circle cx="14" cy="7" r="3"/><circle cx="10" cy="17" r="3"/></symbol></defs></svg>
-<main class="app studio" id="roomPanel" aria-label="غرفة سَكَن">
+<section id="sessionSetup" class="game-setup" aria-labelledby="setupTitle" hidden>
+ <header class="setup-top"><span class="setup-brand"><svg><use href="#leaf"/></svg> سَكَن</span><time id="setupTime"></time></header>
+ <div class="setup-card">
+   <div class="setup-heading"><h1 id="setupTitle">جلسة دراسة</h1><button data-control="openSettings" aria-label="الإعدادات"><svg><use href="#settings"/></svg></button></div>
+   <button class="setup-prayer" id="setupPrayer"></button>
+   <label class="setup-goal">هدف الجلسة<input id="setupGoal" maxlength="120" placeholder="شو بدك تنجز اليوم؟" autocomplete="off"></label>
+   <span class="setup-label">دقائق التركيز / الراحة</span>
+   <div class="presets setup-presets"><button data-setup-preset="25">25 / 5</button><button data-setup-preset="50">50 / 10</button><button data-setup-preset="20">20 / 15</button><button id="setupCustom" data-control="customTimer">مخصّص</button></div>
+   <button class="setup-start" id="beginSession"><svg><use href="#play"/></svg> <span>ابدأ التركيز</span></button>
+   <nav class="setup-links"><button data-control="openAudio">الأصوات</button><button data-control="openJournal">المفكّرة</button><button data-control="clockAdjust">ضبط المؤقّت</button></nav>
+ </div></section>
+ <section id="gameRoom" aria-label="غرفة الدراسة" hidden>
+ <div id="roomWorld"><img id="emptyPlate" alt=""><img id="studyPlate" alt="">
+ <svg id="weatherLayer" viewBox="0 0 1870 841" aria-hidden="true"><defs><clipPath id="glassClip"></clipPath><pattern id="rainLines" width="43" height="67" patternUnits="userSpaceOnUse"><path d="M14 3l-3 13 M37 34l-2 9" stroke="#dbebf2" opacity=".58" stroke-width="1.5"/></pattern></defs><g clip-path="url(#glassClip)"><rect id="weatherTint" width="1870" height="841"/><rect id="weatherRain" x="-50" y="-70" width="2000" height="980" fill="url(#rainLines)"/></g></svg>
+ <div id="lampGlow"></div>
+ <div id="screenFace"><small id="screenPhase"></small><b id="screenDigits" dir="ltr" role="timer"></b></div>
+ <div id="roomTargets"></div><svg id="calMap" hidden aria-label="تعديل نقاط الغرفة"></svg>
+ </div><div id="sessionNotice" hidden><span></span><button data-control="cancelAutoBreak">إلغاء</button></div>
+ <div id="calBar" hidden><select id="calState" aria-label="صورة المعايرة"><option value="empty">غرفة فارغة</option><option value="study_notebook">الشخصية تدرس</option></select><select id="calObject" aria-label="العنصر"></select><button id="calExport">نسخ الإحداثيات</button><button id="calDone">تم</button></div>
+ </section>
+ <dialog id="toolsDialog" class="sheet small-sheet"><div class="sheet-header"><h2>أدوات الغرفة</h2><button data-close aria-label="إغلاق">×</button></div><div class="tool-grid">
+ <button data-control="openPrayers">مواقيت الصلاة</button><button data-control="openJournal">المفكّرة</button><button data-control="openAudio">مزيج الصوت</button><button data-control="openRoom">جوّ الشباك</button><button id="toolLamp">ضوء المصباح</button><button data-control="clockAdjust">ضبط المؤقّت</button><button data-control="openSettings">الإعدادات</button><button id="toolDisplay">ملء الشاشة</button><button id="endSession">إنهاء الجلسة</button></div></dialog>
+ <dialog id="lampDialog" class="sheet small-sheet"><div class="sheet-header"><h2>ضوء المصباح</h2><button data-close aria-label="إغلاق">×</button></div><label class="lamp-level">شدة الإضاءة <input type="range" id="lampLevel" min="0" max="100" value="45"></label></dialog>
+ <dialog id="calDialog" class="sheet"><div class="sheet-header"><h2>إحداثيات الغرفة</h2><button data-close aria-label="إغلاق">×</button></div><textarea id="calJson" dir="ltr" readonly aria-label="scene.json"></textarea><button id="copyCal">نسخ</button></dialog>
+ <main class="app studio" id="roomPanel" aria-label="غرفة سَكَن">
  <svg class="room-art" viewBox="0 0 640 400" preserveAspectRatio="none" focusable="false" aria-hidden="true">
     <defs><clipPath id="pane"><rect x="303" y="35" width="244" height="204" rx="42"/></clipPath><linearGradient id="sunwash" x2=".8" y2="1"><stop stop-color="#fff5d8" stop-opacity=".32"/><stop offset=".76" stop-color="#b39774" stop-opacity=".05"/></linearGradient>
  <pattern id="weave" width="9" height="8" patternUnits="userSpaceOnUse"><path d="m0 3 3-2 3 2 3-2" fill="none" stroke="#fbf1d9" stroke-width=".85" opacity=".38"/></pattern>
@@ -174,7 +201,7 @@
     <button id="allowExact" class="permission-row"><span>التوقيت الدقيق</span><span id="exactStatus"></span></button>
     <p class="muted tiny">اضغط كل إذن لتفعيله. بدون التوقيت الدقيق ممكن يتأخر التنبيه بالخلفية. بعض الجوالات تحتاج السماح للتطبيق بالعمل بالخلفية من إعدادات البطارية.</p>
   </section>
-  <div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٣.٢ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
+  <details class="cal-settings"><summary>أدوات متقدمة</summary><button id="calStart" class="secondary">معايرة مواضع اللمس</button></details><div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٤.٠ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
 Copyright (c) 2016 Batoul Apps
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -290,6 +317,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 <div id="toast" class="toast" role="status" hidden></div>
 <script src="journal.js"></script>
 <script src="room.js"></script>
+<script src="game-room.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

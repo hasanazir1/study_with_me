@@ -10,7 +10,8 @@ let browser;
 (async()=>{
  await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);server.once('exit',code=>{if(code)reject(new Error('Preview exited '+code));});});
  browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{})});
- const page=await browser.newPage();const errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error('Page error:',e.stack);});
+ const page=await browser.newPage();await page.route('**/room/scene.json', route=>route.abort()); // Exercise the illustrated fallback.
+ const errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error('Page error:',e.stack);});
  for(const [width,height]of [[320,568],[396,806],[784,388],[1151,791]]){
   await page.setViewportSize({width,height});await page.goto('http://127.0.0.1:8765/');await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(500);
   await page.evaluate(()=>Sakin.saveSettings(JSON.stringify({configured:true,city:'الخليل',timezone:'Asia/Hebron',latitude:31.5326,longitude:35.0998})));

@@ -184,7 +184,7 @@ public final class AppStore {
         synchronized (LOCK) {
             JSONObject s=settings(c);
             java.util.Iterator<String> keys=changes.keys();
-            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects autoBreak completionSound layerVolumes visualScene ";
+            String allowed=" configured city timezone latitude longitude gps method hanafi offsets fajrAngle ishaAngle keepScreen pauseAtPrayer stopSoundWithTimer prayerAlerts prePrayer volume sound theme task autoImmersive haptics lightEffects autoBreak completionSound layerVolumes visualScene lampLevel ";
             while(keys.hasNext()) { String k=keys.next(); if (allowed.contains(" "+k+" ")) s.put(k,changes.get(k)); }
             if(s.optBoolean("configured")) {
                 double lat=s.optDouble("latitude"),lon=s.optDouble("longitude");

@@ -16,6 +16,7 @@ __pycache__/
 *.idsig
 /tests/prayer-fixture.js
 /node_modules/
+/debug.log
 
 # Signing keys, credentials and machine-specific configuration
 *.p12

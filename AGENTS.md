@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-Current build: Android 1.3.2 / versionCode 7. The owner wants the original 1.3.0 illustrated room perspective. Interact through the clock, almanac, journal, window and radio. See docs/STUDIO_TEST_AR.md.
+Current build: Android 1.4.0 / versionCode 8. The portrait setup opens the painted landscape study room. Geometry, poses and the timer anchor are defined in assets/room/scene.json. Preserve the original illustrated fallback.
 
 ## Product constraints
 

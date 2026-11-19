@@ -51,12 +51,12 @@ public final class NativePresentation {
     public void sync(){
         TimerCore timer=AppStore.loadTimer(activity);
         JSONObject settings=AppStore.settings(activity);
-        boolean nextRunning=timer.running()||timer.waitingForBreak();
+        boolean nextRunning=timer.running()||timer.waitingForBreak()||timer.status.equals("paused");
         if(nextRunning&&!running&&settings.optBoolean("autoImmersive",true))enter(true);
         else if(!nextRunning&&running)exit();
         if(orientationLocked&&!settings.optBoolean("autoImmersive",true))exit();
         running=nextRunning;
-        setAwake(resumed&&running&&settings.optBoolean("keepScreen",true));
+        setAwake(resumed&&(timer.running()||timer.waitingForBreak())&&settings.optBoolean("keepScreen",true));
         String nextTheme=settings.optString("theme","light");
         if(!nextTheme.equals(theme)){theme=nextTheme;int color=Color.parseColor(theme.equals("dark")?"#152C30":"#FAF7F2");root.setBackgroundColor(color);web.setBackgroundColor(color);updateBars();}
     }
@@ -78,7 +78,7 @@ public final class NativePresentation {
     private void unlock(){
         if(!orientationLocked)return;
         orientationLocked=false;
-        try{activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);}catch(RuntimeException ignored){ }
+        try{activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);}catch(RuntimeException ignored){ }
     }
     public void exit(){
         unlock();immersive=false;updateBars();notifyWeb();

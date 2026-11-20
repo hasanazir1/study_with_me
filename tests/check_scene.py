@@ -23,6 +23,12 @@ for state in scene['states'].values():
     assert plate.suffix == '.webp' and plate.is_file()
     size += plate.stat().st_size
 assert size <= 3_000_000
+glass = scene['windowGlass']
+assert 0 <= glass['x'] < glass['x'] + glass['width'] <= width
+assert 0 <= glass['y'] < glass['y'] + glass['height'] <= height
+for asset in ('glass-mask', 'window-rain', 'window-autumn', 'window-sea'):
+    assert (assets / 'room' / (asset + '.webp')).is_file(), asset
+assert sum(path.stat().st_size for path in (assets / 'room').glob('*.webp')) <= 3_000_000
 assert scene['timerAnchor'] in scene['anchors']
 for anchor in scene['anchors'].values():
     polygon(anchor['quad'], True)

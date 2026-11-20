@@ -351,6 +351,13 @@
       try{const saved=JSON.parse(localStorage.getItem(storageKey));if(saved){
         restoreGeometry(saved);
       }}catch{}
+      const glass = scene.windowGlass;
+      const view = $('windowView');
+      Object.assign(view.style, {
+        left: glass.x + 'px', top: glass.y + 'px',
+        width: glass.width + 'px', height: glass.height + 'px'
+      });
+      window.SakinRoom.enableWindowScenes();
       buildTargets();wireCalibration();
       for(const b of document.querySelectorAll('[data-setup-preset]'))b.onclick=()=>document.querySelector('[data-focus="'+b.dataset.setupPreset+'"]').click();
       $('setupPrayer').onclick=actions.prayer;

@@ -17,7 +17,7 @@ let browser;
   const target=id=>loc('.room-target[data-id="'+id+'"]');
   const screenshot=async name=>{if(process.env.SAKIN_SCREENSHOTS){
     fs.mkdirSync(process.env.SAKIN_SCREENSHOTS,{recursive:true});
-    await page.screenshot({path:path.join(process.env.SAKIN_SCREENSHOTS,'phase-a-'+name+'.png')});
+    await page.screenshot({path:path.join(process.env.SAKIN_SCREENSHOTS,'sakin-1.5-'+name+'.png')});
   }};
   await page.goto('http://127.0.0.1:8767');
   await loc('html[data-game=ready]').waitFor();
@@ -34,6 +34,27 @@ let browser;
   await loc('#gameRoom[data-plate=study_notebook]').waitFor();
   await page.waitForTimeout(950);
   await screenshot('focus');
+  const initialSound = await page.evaluate(()=>__preview.settings.sound);
+  const painted = new Set();
+  for (const mood of ['rain','autumn','sea']) {
+    await target('window').click();
+    await loc('[data-room-choice="'+mood+'"]').click();
+    await loc('#roomDialog [data-close]').click();
+    await loc('#roomDialog').waitFor({state:'hidden'});
+    const active = loc('#windowView .window-'+mood);
+    await active.evaluate(image=>image.decode());
+    await page.waitForFunction(id=>{
+      const view=document.querySelector('#windowView .window-'+id);
+      return getComputedStyle(view).opacity==='1';
+    },mood);
+    assert.equal(await page.evaluate(()=>__preview.settings.sound),initialSound);
+    painted.add((await loc('#windowView').screenshot()).toString('base64'));
+    await screenshot(mood);
+  }
+  assert.equal(painted.size,3,'the three choices must paint different window views');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  assert(await loc('.water-glint').isHidden());
+  await page.emulateMedia({reducedMotion:'no-preference'});
   assert(await target('paper').isHidden());
   assert.equal(await page.evaluate(()=>__preview.settings.task),'الفصل الثاني');
   for(const [w,h] of [[844,390],[800,360],[768,432],[1024,768],[568,320]]){
@@ -55,6 +76,9 @@ let browser;
   await target('timer').click();await page.evaluate(()=>__preview.advance(60000));
   await loc('#sessionNotice').waitFor();await page.evaluate(()=>__preview.advance(5100));
   await loc('#gameRoom[data-plate=empty]').waitFor();await target('paper').click();await loc('#prayersDialog [data-close]').click();
+  await target('window').click();await loc('[data-room-choice=sea]').click();
+  await loc('#roomDialog [data-close]').click();
+  await loc('#gameRoom[data-mood=sea][data-plate=empty]').waitFor();
   await page.evaluate(()=>__preview.advance(60500));await loc('#sessionSetup').waitFor();
   await loc('#sessionSetup [data-control=openSettings]').click();
   await loc('.cal-settings summary').click();await loc('#calStart').click();

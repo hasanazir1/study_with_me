@@ -27,6 +27,26 @@
     }
     $('roomPanel').dataset.session=snapshot.timer.status==='running'?snapshot.timer.phase:'idle';
   }
+  function addChoice(room) {
+      const button=document.createElement('button');button.type='button';button.dataset.roomChoice=room.id;button.setAttribute('aria-pressed','false');
+      const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      const use=document.createElementNS(icon.namespaceURI,'use');use.setAttribute('href','#'+room.icon);icon.append(use);icon.setAttribute('aria-hidden','true');
+      const name=document.createElement('strong');name.textContent=room.name;
+      const detail=document.createElement('small');detail.textContent=room.detail;
+      button.append(icon,name,detail);button.addEventListener('click',()=>hooks.save({visualScene:room.id}));$('roomChoices').append(button);
+  }
+  function enableWindowScenes() {
+    const views = [
+      {id:'autumn', name:'شباك الخريف', detail:'أوراق القيقب وضوء ذهبي', icon:'leaf', sound:'stream'},
+      {id:'sea', name:'شباك البحر', detail:'خليج هادئ عند الغروب', icon:'waves', sound:'ocean'}
+    ];
+    for (const view of views) {
+      const room = {...view, colors:rooms[0].colors};
+      rooms.push(room);
+      addChoice(room);
+    }
+    current='';
+  }
   function connect(callbacks) {
     hooks=callbacks;
     const camera=window.matchMedia('(orientation: portrait)');
@@ -34,16 +54,9 @@
     compose();
     camera.addListener(compose);
     document.querySelector('.window-set').addEventListener('click',()=>$('openRoom').click());
-    rooms.forEach(room=>{
-      const button=document.createElement('button');button.type='button';button.dataset.roomChoice=room.id;button.setAttribute('aria-pressed','false');
-      const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');
-      const use=document.createElementNS(icon.namespaceURI,'use');use.setAttribute('href','#'+room.icon);icon.append(use);icon.setAttribute('aria-hidden','true');
-      const name=document.createElement('strong');name.textContent=room.name;
-      const detail=document.createElement('small');detail.textContent=room.detail;
-      button.append(icon,name,detail);button.addEventListener('click',()=>hooks.save({visualScene:room.id}));$('roomChoices').append(button);
-    });
+    rooms.forEach(addChoice);
     $('openRoom').addEventListener('click',()=>hooks.open($('roomDialog')));
     $('roomSound').addEventListener('click',()=>hooks.save({sound:$('roomSound').dataset.suggestedSound}));
   }
-  window.SakinRoom={connect,render,catalog:rooms};
+  window.SakinRoom={connect,render,catalog:rooms,enableWindowScenes};
 })();

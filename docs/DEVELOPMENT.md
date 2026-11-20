@@ -8,7 +8,7 @@ cd study_with_me
 git status
 ```
 
-Read `AGENTS.md` and `docs/PROGRESS.md` before a change. The latest milestone is phase two (1.2.1 / code 4), awaiting device feedback; future phases need the user's request to proceed.
+Read `AGENTS.md` and `docs/PROGRESS.md` before a change. Use docs/PROGRESS.md for the current release and outstanding device checks.
 
 ## Requirements
 

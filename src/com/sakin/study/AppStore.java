@@ -194,7 +194,7 @@ public final class AppStore {
             if (s.optString("city").length()>80 || s.optString("task").length()>120) throw new IllegalArgumentException("النص طويل جدًا");
             if (s.optInt("volume")<0||s.optInt("volume")>100) throw new IllegalArgumentException("Invalid volume");
             if (!java.util.Arrays.asList("rain","ocean","stream","brown","silence").contains(s.optString("sound"))) throw new IllegalArgumentException("Invalid sound");
-            if (!java.util.Arrays.asList("rain","nature","fire","cafe","night","quiet").contains(s.optString("visualScene"))) throw new IllegalArgumentException("Invalid visual scene");
+            if (!java.util.Arrays.asList("rain","nature","fire","cafe","night","quiet","autumn","sea").contains(s.optString("visualScene"))) throw new IllegalArgumentException("Invalid visual scene");
             JSONObject layers=s.getJSONObject("layerVolumes");
             java.util.Iterator<String> layerKeys=layers.keys();
             while(layerKeys.hasNext()) {String key=layerKeys.next();if(!key.matches("(rain|ocean|stream|brown)_[01]")||layers.getInt(key)<0||layers.getInt(key)>100)throw new IllegalArgumentException("Invalid layer volume");}

@@ -45,6 +45,12 @@
  </div></section>
  <section id="gameRoom" aria-label="غرفة الدراسة" hidden>
  <div id="roomWorld"><img id="emptyPlate" alt=""><img id="studyPlate" alt="">
+ <div id="windowView" aria-hidden="true">
+   <img class="window-rain" src="room/window-rain.webp" alt="">
+   <img class="window-autumn" src="room/window-autumn.webp" alt="">
+   <img class="window-sea" src="room/window-sea.webp" alt="">
+   <i class="falling-leaf"></i><i class="falling-leaf second"></i><i class="water-glint"></i>
+ </div>
  <svg id="weatherLayer" viewBox="0 0 1870 841" aria-hidden="true"><defs><clipPath id="glassClip"></clipPath><pattern id="rainLines" width="43" height="67" patternUnits="userSpaceOnUse"><path d="M14 3l-3 13 M37 34l-2 9" stroke="#dbebf2" opacity=".58" stroke-width="1.5"/></pattern></defs><g clip-path="url(#glassClip)"><rect id="weatherTint" width="1870" height="841"/><rect id="weatherRain" x="-50" y="-70" width="2000" height="980" fill="url(#rainLines)"/></g></svg>
  <div id="lampGlow"></div>
  <div id="screenFace"><small id="screenPhase"></small><b id="screenDigits" dir="ltr" role="timer"></b></div>
@@ -201,7 +207,7 @@
     <button id="allowExact" class="permission-row"><span>التوقيت الدقيق</span><span id="exactStatus"></span></button>
     <p class="muted tiny">اضغط كل إذن لتفعيله. بدون التوقيت الدقيق ممكن يتأخر التنبيه بالخلفية. بعض الجوالات تحتاج السماح للتطبيق بالعمل بالخلفية من إعدادات البطارية.</p>
   </section>
-  <details class="cal-settings"><summary>أدوات متقدمة</summary><button id="calStart" class="secondary">معايرة مواضع اللمس</button></details><div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٤.٠ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
+  <details class="cal-settings"><summary>أدوات متقدمة</summary><button id="calStart" class="secondary">معايرة مواضع اللمس</button></details><div class="about"><svg><use href="#leaf"/></svg><span>سَكَن ١.٥.٠ • مساحة هادئة للدراسة</span><p>مجاني، بدون إعلانات أو حساب. موقعك وإعداداتك وسجلّك يبقوا على جوالك. التسجيلات الطبيعية بترخيص CC0، وكل الأصوات محفوظة داخل التطبيق.</p><details><summary>المكتبات والتراخيص</summary><pre id="licenseText">حساب الصلاة: Adhan Java 1.2.1 — MIT
 Copyright (c) 2016 Batoul Apps
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -307,7 +313,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 <dialog id="roomDialog" class="sheet room-dialog" aria-labelledby="roomTitle">
   <div class="sheet-handle" aria-hidden="true"></div>
   <header class="sheet-header"><div><span class="eyebrow">غرفتك الصغيرة</span><h2 id="roomTitle">اختَر جوّك</h2></div><button class="icon-btn" data-close aria-label="إغلاق"><svg><use href="#close"/></svg></button></header>
-  <p class="scene-note">ست أجواء بسيطة لنفس الغرفة. اختَر المكان اللي بيريّحك.</p>
   <div id="roomChoices" class="scene-choices" aria-label="أجواء الغرفة"></div>
   <p class="scene-note">تغيير الجو بصري فقط. الصوت بتختاره بشكل مستقل من زر الأصوات، وما بيتغيّر لحاله.</p>
   <button id="roomSound" class="primary" type="button" hidden>اختيار صوت مناسب</button>

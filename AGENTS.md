@@ -7,7 +7,7 @@
 3. `docs/ROADMAP.md` for the accepted phased plan
 4. `docs/ARCHITECTURE.md` before changing native or UI behavior
 
-Current build: Android 1.4.0 / versionCode 8. The portrait setup opens the painted landscape study room. Geometry, poses and the timer anchor are defined in assets/room/scene.json. Preserve the original illustrated fallback.
+Current build: Android 1.5.0 / versionCode 9. The window views use packaged artwork and a glass mask. Start at docs/PROGRESS.md.
 
 ## Product constraints
 

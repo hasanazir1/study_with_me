@@ -2,7 +2,7 @@ name: Project checks
 
 on:
   push:
-    branches: [main, feature/game-room-v2]
+    branches: [main, feature/game-room-v2, feature/window-scenes]
   pull_request:
   workflow_dispatch:
 
